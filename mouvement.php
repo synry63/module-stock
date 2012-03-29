@@ -35,12 +35,17 @@ $arrayjs[4] = "/custom/stock/lib/datatables/js/initDatatablesMouv.js";
 $arrayjs[5] = "/custom/stock/lib/datatables/js/addData.js";
 
 llxHeader('', '', '', '', '', '', $arrayjs);
-print'<p style="margin:5px;"> scanné : 0 </p>';
-print'<input id="tracking" style="margin:5px;"  type="text" placeholder="' . $langs->trans("num tracking") .'"/>';
-print'<input style="margin:5px;"  type="text" placeholder="' . $langs->trans("code mouv") .'"/>';
-print'<a  href="javascript:void(0);" onclick="fn;">' . $langs->trans("ajouter") . '&nbsp;</a>';
-
-
+print'<form class="mouvement">';
+print'<div class="entete">';
+print'<h3>Saisie pièce</h3>';
+print'<p class="compteur"> Scanné : 0 </p>';
+print'</div>';
+print'<textarea class="tracking"  placeholder="' . $langs->trans("num tracking") .'">';
+print'</textarea>';
+print'<input class="entrepot" type="text" placeholder="' . $langs->trans("Entrepôt") .'"/>';
+print'<input type="submit" class="submit" value="'. $langs->trans("ajouter").'">';
+print'</form>';
+/*table views */
 print '<table cellpadding="0" cellspacing="0" border="0" class="display" id="mouvement">';
 
 print'<thead>';

@@ -32,10 +32,17 @@ $arrayjs[0] = "/custom/stock/lib/datatables/js/jquery.dataTables.js";
 $arrayjs[1] = "/custom/stock/lib/datatables/js/initDatatablesEtatstock.js";
 
 llxHeader('', '', '', '', '', '', $arrayjs);
-print'<input id="" style="margin:5px;"  type="text" placeholder="' . $langs->trans("Entrepot") .'"/>';
-print'<a id="rien" href="javascript:void(0);" onclick="fn();">' . $langs->trans("Selectionner") . '&nbsp;</a>';
 
+// init list entrepot option
+   $options = '<option value="">&nbsp;</option>';
+   $options .= '<option value="dell">Dell</option>';
 
+print'<form class="entete_etatstock">';
+print'<label>'.$langs->trans("Entrepôt : ") .'</label>';
+print'<select>'.$options.'</select>';
+print'<input type="submit" class="submit" value="'. $langs->trans("Selectionner").'">';
+print'</form>';
+/*table views */
 print '<table cellpadding="0" cellspacing="0" border="0" class="display" id="etatstock">';
 
 print'<thead>';

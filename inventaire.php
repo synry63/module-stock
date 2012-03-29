@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * 	\file       
  * 	\ingroup    
  * 	\brief      flux mouvement
@@ -25,33 +25,62 @@
 $res=@include("../../main.inc.php");									// For "custom" directory
 if (! $res) $res=@include("../main.inc.php");
 
- // Added by Matelli (init list option)
+ // init list entrepot option
    $options = '<option value="">&nbsp;</option>';
    $options .= '<option value="dell">Dell</option>';
 
 
 /* active datatable js */
 $arrayjs = array();
-$arrayjs[0] = "/lib/datatables/js/jquery.jeditable.js";
-$arrayjs[1] = "/lib/datatables/js/jquery.dataTables.js";
-$arrayjs[2] = "/lib/datatables/js/initXHR.js";
-$arrayjs[3] = "/lib/datatables/js/KeyTable.js";
-$arrayjs[4] = "/lib/datatables/js/initDatatablesMouv.js";
-$arrayjs[5] = "/lib/datatables/js/addData.js";
+$arrayjs[0] = "/custom/stock/lib/datatables/js/jquery.jeditable.js";
+$arrayjs[1] = "/custom/stock/lib/datatables/js/jquery.dataTables.js";
+$arrayjs[2] = "/custom/stock/lib/datatables/js/initXHR.js";
+$arrayjs[3] = "/custom/stock/lib/datatables/js/KeyTable.js";
+$arrayjs[4] = "/custom/stock/lib/datatables/js/initDatatablesInventaire.js";
+$arrayjs[5] = "/custom/stock/lib/datatables/js/addData.js";
 
 llxHeader('', '', '', '', '', '', $arrayjs);
-print'<p style="margin:5px;"> Scanné : </p>';
-print'<p style="margin:5px;">'. $langs->trans("Entrepot : ");
-print'<select>'.$options.'</select>';
-print'<a href="javascript:void(0);" onclick="fn();">' . $langs->trans("Lancer") . '&nbsp;</a><br/>';
 
-print'<input id="tracking" style="margin:5px;"  type="text" placeholder="' . $langs->trans("emplacement;n°pièce;S/N") .'"/>';
-print'<input style="margin:5px;"  type="text" placeholder="' . $langs->trans("Entrepot") .'"/>';
-print'<a id="rien" href="javascript:void(0);" onclick="fnClickAddRow();">' . $langs->trans("ajouter") . '&nbsp;</a>';
+/* inventaire total */ 
+print'<form class="inventaire_total">';
+print'<div class="entete">';
+    print'<h3>Inventaire Total </h3>';
+    print'<div class="choixentrepot">';
+        print '<label>'.$langs->trans("Entrepôt : ").'</label>';
+        print'<select>'.$options.'</select>';
+        print'<a href="javascript:void(0);" onclick="fn();">' . $langs->trans("Lancer").'</a>';
+    print'</div>';
+    print'<span class="compteur"> Scanné : 0 </span>';
+print'</div>';
+print'<textarea class="emplacement_numeropiece_numserie"  placeholder="' . $langs->trans("emplacement;n°pièce;S/N") .'">';
+print'</textarea>';
+print'<input class="entrepot" type="text" placeholder="' . $langs->trans("Entrepôt") .'"/>';
+print'<input type="submit" class="submit" value="'. $langs->trans("ajouter").'">';
+print'</form>';
 
-
+/* inventaire partiel */
+print'<form class="inventaire_partiel">';
+print'<div class="entete">';
+print'<h3>Inventaire Partiel </h3>';
+print'</div>';
+print'<div class="piece_archive">';
+    print'<p> Scanné : 0 </p>';
+    print'<textarea class="emplacement_numeropiece_numserie"   placeholder="' . $langs->trans("Saisie numéro de pièces") .'">';
+    print'</textarea>';
+    print'<input class="entrepot" type="text" placeholder="' . $langs->trans("Entrepôt") .'"/>';
+    print'<input type="button" class="submit" value="'. $langs->trans("Archiver").'">';
+print'</div>';
+print'<div class="piece_inventaire">';
+    print'<p> Scanné : 0 </p>';
+    print'<textarea  class="emplacement_numeropiece_numserie" placeholder="' . $langs->trans("emplacement;n°pièce;S/N") .'">';
+    print'</textarea>';
+    print'<input class="entrepot" type="text"   placeholder="' . $langs->trans("Entrepôt") .'"/>';
+    print'<input type="button" class="submit" value="'. $langs->trans("Ajouter").'">';
+print'</div>';
+print'</form>';
 print '<table cellpadding="0" cellspacing="0" border="0" class="display" id="mouvement">';
 
+/*table views */
 print'<thead>';
     print'<th class="sorting">';
     print 'Nom operateur';
@@ -60,10 +89,7 @@ print'<thead>';
     print 'Date et heure';
     print'</th>';
     print'<th class="sorting">';
-    print 'Numero de tracking';
-    print'</th>';
-    print'<th class="sorting">';
-    print 'Mouvement colis';
+    print 'Emplacement';
     print'</th>';
     print'<th class="sorting">';
     print 'Référence pièce';
@@ -71,15 +97,7 @@ print'<thead>';
     print'<th class="sorting">';
     print 'Numéro de série';
     print'</th>';
-    print'<th class="sorting">';
-    print 'Emplacement';
-    print'</th>';    
-     print'<th class="sorting">';
-    print 'Check';
-    print'</th>';    
-    
 print'</thead>';
-
 
 print'<thead class="recherche">';
 print'<tr>';
@@ -93,5 +111,7 @@ print'<tbody>';
 print'</tbody>';
 
 print'</table>';
+print'<br/>';
+print'<p style="margin:10px;"> Total pièces Scannées : 1 </p>';
 
 ?>
