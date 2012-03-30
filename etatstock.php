@@ -64,6 +64,8 @@ print'<thead class="recherche">';
 print'<tr>';
 print'<td id="1"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Réf pièce") . '" class="inputSearch"/></td>';
 print'<td id="2"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Num série") . '" class="inputSearch" /></td>';
+print'<td id="3"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Quantité") . '" class="inputSearch" /></td>';
+
 print'</tr>';
 print'</thead>';
 

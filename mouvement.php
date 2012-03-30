@@ -37,8 +37,8 @@ $arrayjs[5] = "/custom/stock/lib/datatables/js/addData.js";
 llxHeader('', '', '', '', '', '', $arrayjs);
 print'<form class="mouvement">';
 print'<div class="entete">';
-print'<h3>Saisie pièce</h3>';
-print'<p class="compteur"> Scanné : 0 </p>';
+    print'<h3>Saisie pièce</h3>';
+    print'<p class="compteur"> Scanné : 0 </p>';
 print'</div>';
 print'<textarea class="tracking"  placeholder="' . $langs->trans("num tracking") .'">';
 print'</textarea>';
@@ -81,6 +81,12 @@ print'<thead class="recherche">';
 print'<tr>';
 print'<td id="1"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search opérateur") . '" class="inputSearch"/></td>';
 print'<td id="2"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search date et heure") . '" class="inputSearch" /></td>';
+print'<td id="3"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Num tracking") . '" class="inputSearch" /></td>';
+print'<td id="4"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Mouv colis") . '" class="inputSearch" /></td>';
+print'<td id="5"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Réf pièce") . '" class="inputSearch" /></td>';
+print'<td id="6"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Num série") . '" class="inputSearch" /></td>';
+print'<td id="7"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Emplacement") . '" class="inputSearch" /></td>';
+
 print'</tr>';
 print'</thead>';
 

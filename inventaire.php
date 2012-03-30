@@ -101,8 +101,12 @@ print'</thead>';
 
 print'<thead class="recherche">';
 print'<tr>';
-print'<td id="1"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search opérateur") . '" class="inputSearch"/></td>';
-print'<td id="2"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search date et heure") . '" class="inputSearch" /></td>';
+print'<td id="1"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Opérateur") . '" class="inputSearch"/></td>';
+print'<td id="2"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Date et heure") . '" class="inputSearch" /></td>';
+print'<td id="3"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Emplacement") . '" class="inputSearch" /></td>';
+print'<td id="4"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Réf pièce") . '" class="inputSearch" /></td>';
+print'<td id="5"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Num Série") . '" class="inputSearch" /></td>';
+
 print'</tr>';
 print'</thead>';
 
