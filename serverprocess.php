@@ -28,7 +28,7 @@ dol_include_once("/stock/class/stock.class.php");
 $object = new Stock($couch);
 
 if($_GET['tracking']!="" && $_GET['mouv']!=""){
-    $object->create($_GET['tracking'],$_GET['mouv']);
+    $object->create($_GET['tracking'],$_GET['mouv'],$user);
 }
 
 $result = $object->getList();
@@ -38,25 +38,27 @@ $output = array(
     "iTotalDisplayRecords" => 0,
     "aaData" => array()
 );
-$iTotal=  count($result->rows);
-$output["iTotalRecords"]=$iTotal;
-$output["iTotalDisplayRecords"]=$iTotal;
+if($result){
+    $iTotal=  count($result->rows);
+    $output["iTotalRecords"]=$iTotal;
+    $output["iTotalDisplayRecords"]=$iTotal;
 
-/*foreach($result->rows AS $aRow) {
+foreach($result->rows AS $aRow) {
     unset($aRow->value->class);
     unset($aRow->value->_rev);
-    //unset($aRow->value->_id);
     
     $output["aaData"][]=$aRow->value;
     unset($aRow);
-}*/
-for($i=$iTotal;$i>0;$i--){
-    $aRow = $result->rows[$i-1];
-    unset($aRow->value->class);
-    unset($aRow->value->_rev);
-    $output["aaData"][]=$aRow->value;
-    unset($aRow);
-    
+}
+ /*   for($i=$iTotal;$i>0;$i--){
+        $aRow = $result->rows[$i-1];
+        unset($aRow->value->class);
+        unset($aRow->value->_rev);
+        $output["aaData"][]=$aRow->value;
+        unset($aRow);
+
+    }
+*/
 }
 header('Content-type: application/json');
 echo json_encode($output);

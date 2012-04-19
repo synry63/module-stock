@@ -34,7 +34,7 @@ class Stock extends couchDocument
         parent::__construct($db);
         $this->db = $db;
     }
-    function create($tracking,$codemouv){
+    function create($tracking,$codemouv,$user){
         global $conf, $langs;
          
          $code = substr($codemouv, 4);
@@ -45,7 +45,7 @@ class Stock extends couchDocument
             $size = sizeof($array);
             for($i=0;$i<$size;$i++){ 
                 $obj->class = "mouvement";
-                $obj->operateur = "toto";
+                $obj->operateur = $user->login;
                 $obj->datetime = "28/08/12 12h58";
                 $obj->tracking = $array[$i];
                 $obj->codeprestataire =  $prestataire;
@@ -55,10 +55,10 @@ class Stock extends couchDocument
                 $obj->emplacement = "";
                 $col[$i] = $obj;
                 $obj=null;
-
+                
             }
             try {
-                $response = $this->db->storeDocs($col);
+                $this->db->storeDocs($col);
                 } catch (Exception $e) {
                 $this->error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
                 dol_syslog("Ego::Create ".$this->error, LOG_ERR);
@@ -69,7 +69,13 @@ class Stock extends couchDocument
     }
     function getList(){
           global $conf;
-          return $this->db->getView('mouvement','list');
+          try {
+             return $this->db->getView('mouvement','list'); 
+          } catch (Exception $exc) {
+              return -1;
+          }
+
+          
     }
     function updateDoc(){
         $key = $_POST['idrow'];

@@ -53,9 +53,7 @@ oTable = $(\'#mouvement\').dataTable( {
 		/* Initialise the Editable instance for this table */
 		$(nCell).editable( "edit.php", {
                 "callback": function( sValue ) {
-                    var aPos = oTable.fnGetPosition( this );
-                    oTable.fnUpdate(sValue, aPos[0], aPos[1]+1,true,false); 
-                    keys.block = false;
+                   keys.block = false;
                 },
                 "submitdata":function () {
                     var posi = oTable.fnGetPosition(nCell);
@@ -63,7 +61,7 @@ oTable = $(\'#mouvement\').dataTable( {
                     var column = columns[posi[1]];
 						return {
 							"idrow": idrow,
-                                                        "column": column
+                                                        "column": column                                                        
 						};
                 }
                 }, { 
