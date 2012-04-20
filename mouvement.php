@@ -36,9 +36,8 @@ if($_POST['tracking']!=null){
 $arrayjs = array();
 $arrayjs[0] = "/custom/stock/lib/datatables/js/jquery.jeditable.js";
 $arrayjs[1] = "/custom/stock/lib/datatables/js/jquery.dataTables.js";
-$arrayjs[2] = "/custom/stock/lib/datatables/js/initXHR.js";
-$arrayjs[3] = "/custom/stock/lib/datatables/js/KeyTable.js";
-$arrayjs[4] = "/custom/stock/lib/datatables/js/addData.js";
+$arrayjs[2] = "/custom/stock/lib/datatables/js/KeyTable.js";
+
 
 llxHeader('', '', '', '', '', '', $arrayjs);
 print'<form class="mouvement" action="mouvement.php" method="post">';
@@ -79,7 +78,7 @@ print'<thead>';
     print'<th class="sorting">';
     print 'Emplacement';
     print'</th>';    
-     print'<th class="sorting">';
+     print'<th>';
     print 'Check';
     print'</th>';    
     

@@ -102,7 +102,7 @@ print'</thead>';
 print'<tbody>';
     print'<tr id="1">';
         print'<td> blablabla </td>';
-        print'<td> blablabla </td>';
+        print'<td class="readonly"> blablabla </td>';
         print'<td> blablabla </td>';
         print'<td> blablabla </td>';
         print'<td> blablabla </td>';
@@ -112,7 +112,7 @@ print'<tbody>';
     
     print'<tr id="2">';
         print'<td> blibli </td>';
-        print'<td> blibli </td>';
+        print'<td class="readonly"> blibli </td>';
         print'<td> blibli </td>';
         print'<td> blibli </td>';
         print'<td> blibli </td>';

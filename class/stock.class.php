@@ -36,7 +36,7 @@ class Stock extends couchDocument
     }
     function create($tracking,$codemouv,$user){
         global $conf, $langs;
-         
+        
          $code = substr($codemouv, 4);
          $prestataire = substr($codemouv,0,4);
          $tracking = trim($tracking);

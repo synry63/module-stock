@@ -43,13 +43,13 @@ if($result){
     $output["iTotalRecords"]=$iTotal;
     $output["iTotalDisplayRecords"]=$iTotal;
 
-foreach($result->rows AS $aRow) {
-    unset($aRow->value->class);
-    unset($aRow->value->_rev);
-    
-    $output["aaData"][]=$aRow->value;
-    unset($aRow);
-}
+    foreach($result->rows AS $aRow){
+        unset($aRow->value->class);
+        unset($aRow->value->_rev);
+
+        $output["aaData"][]=$aRow->value;
+        unset($aRow);
+    }
  /*   for($i=$iTotal;$i>0;$i--){
         $aRow = $result->rows[$i-1];
         unset($aRow->value->class);
