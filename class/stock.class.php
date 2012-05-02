@@ -26,27 +26,31 @@
 require_once(DOL_DOCUMENT_ROOT ."/core/class/commonobject.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 
-class Stock extends couchDocument
+class Stock extends CommonObject
 {
-    var $db;
+    public $element;
     /*Constructor */
-    function Stock (couchClient $db){
+    function Stock(couchClient $db){
+        $this->element="mouvement";
         parent::__construct($db);
-        $this->db = $db;
+        return 1;
     }
+    
     function create($tracking,$codemouv,$user){
         global $conf, $langs;
-        
+       // date_default_timezone_set('UTC');
+       // $s = time(); 
+         $timestamp = dol_now();
          $code = substr($codemouv, 4);
          $prestataire = substr($codemouv,0,4);
          $tracking = trim($tracking);
          if($tracking!=""){
-            $array =  split(" ", $tracking);
+            $array =  split("\n", $tracking);
             $size = sizeof($array);
             for($i=0;$i<$size;$i++){ 
-                $obj->class = "mouvement";
+                $obj->class = $this->element;
                 $obj->operateur = $user->login;
-                $obj->datetime = "28/08/12 12h58";
+                $obj->datetime = $timestamp;
                 $obj->tracking = $array[$i];
                 $obj->codeprestataire =  $prestataire;
                 $obj->codemouv = $code;
@@ -56,20 +60,39 @@ class Stock extends couchDocument
                 $col[$i] = $obj;
                 $obj=null;
                 
+             }
+             $this->db->storeDocs($col);
+          }
+     }
+     function createByButton($rowsid,$user,$codemouv){
+            $array =  split(" ", $rowsid);
+            $size = sizeof($array);
+            $timestamp = dol_now();
+            for($i=0;$i<$size;$i++){ 
+                $doc =  $this->load($array[$i]);
+                $obj->class = $this->element;
+                $obj->_id = uniqid();
+                $obj->operateur = $user->login;
+                $obj->datetime = $timestamp;
+                $obj->codemouv = $codemouv;
+                $obj->codeprestataire = $doc->codeprestataire;
+                $obj->tracking = $doc->tracking;
+                $obj->reference = $doc->reference;
+                $obj->serie = $doc->serie;
+                $obj->emplacement = $doc->emplacement;
+                $col[$i] = $obj;
+                $obj=null;
             }
-            try {
-                $this->db->storeDocs($col);
-                } catch (Exception $e) {
-                $this->error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-                dol_syslog("Ego::Create ".$this->error, LOG_ERR);
-                return -1;
-                }
-         }
-           
-    }
+            $this->db->storeDocs($col);
+            return $col;   
+            
+     }
+    
+    /*
     function getList(){
           global $conf;
           try {
+             //return $this->db->limit(5)->getView('mouvement','list'); 
              return $this->db->getView('mouvement','list'); 
           } catch (Exception $exc) {
               return -1;
@@ -92,7 +115,7 @@ class Stock extends couchDocument
            return ""; 
         }
     }
-    function test(){
+    function updateDocSpecial(){
         $key = $_POST['idrow'];
         $value = $_POST['value'];
         $code = substr($value, 4);
@@ -108,6 +131,6 @@ class Stock extends couchDocument
            return ""; 
         }
     }
-
+*/
 }
 ?>
