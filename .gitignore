@@ -1,1 +1,7 @@
 lib/datatables/css/*
+exemplestock
+exemplestock~
+etatstock_1.php
+lib/datatables/js/initDatatablesEtatstock.js
+lib/datatables/js/initDatatablesEtatstock_1.js
+lib/datatables/js/initXHR.js

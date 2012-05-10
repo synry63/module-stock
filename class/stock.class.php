@@ -87,6 +87,71 @@ class Stock extends CommonObject
             return $col;   
             
      }
+     public function getView($name)
+     {
+        global $conf;
+        if($name=="list")
+            return $this->db->limit(/*$conf->liste_limit*/1000)->getView($this->class,$name);
+        else 
+            return $this->db->group(true)->group_level(1)->getView($this->class,$name);
+     }
+     public function getNb()
+     {
+         return $this->db->group(true)->group_level(1)->getView($this->class,'test');
+     }
+     public function createView($name){
+         //$doc = $this->load("_design/mouvement");
+         //$field = $doc->;
+         //$obj[$i]->_id="_design/".$name;
+         //$obj[$i]->_id="_design/".$name;
+         //$obj[$i]->language="javascript";
+        // $obj->_id="_design/mouvement";
+        // $obj->language="javascript";
+         /*$obj[$i]->views->$name->map='function(doc){
+            if(doc.class=="mouvement" && doc.reference && doc.codeprestataire=="'.$name.'")		
+                emit(doc.reference, {"reference":doc.reference,"emplacement":doc.emplacement,"codemouv":doc.codemouv});
+             
+            }';
+         $obj[$i]->views->$name->reduce='function(key, values, rereduce){
+                    var cpt =0;
+                    for(var i= 0; i < values.length; i++){
+                        if(values[i].codemouv=="300" || values[i].codemouv=="900") cpt++;
+                        if(values[i].codemouv=="400") cpt--;
+                    }
+                    var out={"reference":values[0].reference,"emplacement":values[0].emplacement,"quantite":cpt}		
+                    return out;
+            }';*/
+         $doc = $this->db->getDoc("_design/mouvement");
+         $doc->views->$name->map='function(doc){
+            if(doc.class=="mouvement" && doc.reference && doc.codeprestataire=="'.$name.'")		
+                emit(doc.reference, {"reference":doc.reference,"serie":doc.serie,"emplacement":doc.emplacement,"codemouv":doc.codemouv});
+             
+            }';
+         $doc->views->$name->reduce='function(key, values, rereduce){
+                    var cpt =0;
+                    for(var i= 0; i < values.length; i++){
+                        if(values[i].codemouv=="300" || values[i].codemouv=="900") cpt++;
+                        if(values[i].codemouv=="400") cpt--;
+                    }
+                    var out={"reference":values[0].reference,"serie":values[0].serie,"emplacement":values[0].emplacement,"quantite":cpt}		
+                    return out;
+            }';
+        //$doc->set($fi$field = $obj;eld,$value);
+         //$doc->record();
+        try {
+        //$test ='';    
+         $result = $this->db->storeDoc($doc);
+        //header('Content-type: application/json');    
+        //print_r (json_encode($obj[0]));
+  
+    } catch (Exception $e) {
+        echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+        exit();
+    }
+
+
+     }
+     
     
     /*
     function getList(){
