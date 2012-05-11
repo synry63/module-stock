@@ -17,7 +17,7 @@
  */
 
 /**
- *		\file       htdocs/custom/stock
+ *		\file       htdocs/custom/stock2
  *		\ingroup    crm
  *		\brief      
  *		\version    
@@ -26,12 +26,15 @@
 require_once(DOL_DOCUMENT_ROOT ."/core/class/commonobject.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 
-class Stock extends CommonObject
+class Stock2 extends CommonObject
 {
     public $element;
     /*Constructor */
-    function Stock(couchClient $db){
+    function Stock2($db){
+	global $conf;
+	
         $this->element="mouvement";
+	
         parent::__construct($db);
         return 1;
     }
@@ -61,7 +64,7 @@ class Stock extends CommonObject
                 $obj=null;
                 
              }
-             $this->db->storeDocs($col);
+             $this->couchdb->storeDocs($col);
           }
      }
      function createByButton($rowsid,$user,$codemouv){
@@ -83,7 +86,7 @@ class Stock extends CommonObject
                 $col[$i] = $obj;
                 $obj=null;
             }
-            $this->db->storeDocs($col);
+            $this->couchdb->storeDocs($col);
             return $col;   
             
      }
@@ -91,13 +94,13 @@ class Stock extends CommonObject
      {
         global $conf;
         if($name=="list")
-            return $this->db->limit(/*$conf->liste_limit*/1000)->getView($this->class,$name);
+            return $this->couchdb->limit(/*$conf->liste_limit*/1000)->getView($this->class,$name);
         else 
-            return $this->db->group(true)->group_level(1)->getView($this->class,$name);
+            return $this->couchdb->group(true)->group_level(1)->getView($this->class,$name);
      }
      public function getNb()
      {
-         return $this->db->group(true)->group_level(1)->getView($this->class,'test');
+         return $this->couchdb->group(true)->group_level(1)->getView($this->class,'test');
      }
      public function createView($name){
          //$doc = $this->load("_design/mouvement");
@@ -121,7 +124,7 @@ class Stock extends CommonObject
                     var out={"reference":values[0].reference,"emplacement":values[0].emplacement,"quantite":cpt}		
                     return out;
             }';*/
-         $doc = $this->db->getDoc("_design/mouvement");
+         $doc = $this->couchdb->getDoc("_design/mouvement");
          $doc->views->$name->map='function(doc){
             if(doc.class=="mouvement" && doc.reference && doc.codeprestataire=="'.$name.'")		
                 emit(doc.reference, {"reference":doc.reference,"serie":doc.serie,"emplacement":doc.emplacement,"codemouv":doc.codemouv});
@@ -140,7 +143,7 @@ class Stock extends CommonObject
          //$doc->record();
         try {
         //$test ='';    
-         $result = $this->db->storeDoc($doc);
+         $result = $this->couchdb->storeDoc($doc);
         //header('Content-type: application/json');    
         //print_r (json_encode($obj[0]));
   
@@ -157,8 +160,8 @@ class Stock extends CommonObject
     function getList(){
           global $conf;
           try {
-             //return $this->db->limit(5)->getView('mouvement','list'); 
-             return $this->db->getView('mouvement','list'); 
+             //return $this->couchdb->limit(5)->getView('mouvement','list'); 
+             return $this->couchdb->getView('mouvement','list'); 
           } catch (Exception $exc) {
               return -1;
           }

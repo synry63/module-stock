@@ -24,9 +24,9 @@
  */
 $res=@include("../../main.inc.php");									// For "custom" directory
 if (! $res) $res=@include("../main.inc.php");
-dol_include_once("/stock/class/stock.class.php");
+dol_include_once("/stock2/class/stock2.class.php");
 
-$object = new Stock($couch);
+$object = new Stock2($db);
 
 
 /*edit cell value */
@@ -65,7 +65,7 @@ if($_POST['idrow']!=null){
 
 
 /*get mouvements*/
-if($_GET['json'])
+if($_GET['json']=="list")
 {
     $output = array(
     "sEcho" => intval($_GET['sEcho']),
@@ -109,15 +109,18 @@ if(isset($_POST['tableData'])){
     exit;
 }
 /* active datatable js */
-$arrayjs = array();
+/*$arrayjs = array();
 $arrayjs[0] = "/custom/stock/lib/datatables/js/jquery.jeditable.js";
 $arrayjs[1] = "/custom/stock/lib/datatables/js/jquery.dataTables.js";
 $arrayjs[2] = "/custom/stock/lib/datatables/js/KeyTable.js";
 $arrayjs[3] = "/custom/stock/lib/datatables/js/indicateurTracking.js";
 $arrayjs[6] = "/custom/stock/lib/datatables/js/TableTools.js";
-$arrayjs[7] = "/custom/stock/lib/datatables/js/ZeroClipboard.js";
+$arrayjs[7] = "/custom/stock/lib/datatables/js/ZeroClipboard.js";*/
 
-llxHeader('', '', '', '', '', '', $arrayjs);
+llxHeader();
+
+print'<div class="row">';
+print start_box("Saisie des mouvements","twelve","16-Download.png",true,true);
 
 /*tableau de saisie rapide */
 print'<form class="mouvement" action="mouvement.php" method="post">';
@@ -130,25 +133,32 @@ print'</textarea>';
 print'<input class="codemouv" type="text" name="mouv" placeholder="' . $langs->trans("Code mouv") .'"/>';
 print'<input type="submit" class="submit" value="'. $langs->trans("ajouter").'">';
 print'</form>';
+
+print end_box();
+print'</div>';
+
+print'<div class="row">';
+print start_box("Liste des mouvements","twelve","16-List-w_-Images.png",false,false);
+
 $i=0;
 $obj=new stdClass();
 
 /*table views */
-print '<table cellpadding="0" cellspacing="0" border="0" class="display" id="mouvement">';
+print '<table class="display dt_act" id="mouvement">';
 
 print'<thead>';
-    print'<th class="sorting">';
-    print '&nbsp;';
+print'<tr>';
+    print'<th>';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "_id";
     $obj->aoColumns[$i]->bVisible = false;
     $i++;
-    print'<th class="sorting">';
+    print'<th class="essential">';
     print 'Nom operateur';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "operateur";
     $i++;
-    print'<th class="sorting">';
+    print'<th class="essential">';
     print 'Date et heure';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "datetime";
@@ -163,63 +173,43 @@ print'<thead>';
         return null;
     }%';
     $i++;
-    print'<th class="sorting">';
+    print'<th class="essential">';
     print 'Numero de tracking';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "tracking";
-    $obj->aoColumns[$i]->fnRender = '%function(obj) {
-    var str = obj.aData.tracking;
-    if(typeof str === $undefined$)
-        str = null;
-        return str;
-    }%';
+    $obj->aoColumns[$i]->sDefaultContent = "";
     $i++;
-    print'<th class="sorting">';
+    print'<th class="essential">';
     print 'Mouvement colis';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "codemouv";
+    $obj->aoColumns[$i]->sDefaultContent = "";
     $obj->aoColumns[$i]->fnRender = '%function(obj) {
     var str = obj.aData.codeprestataire+obj.aData.codemouv;
-    if(typeof str === $undefined$)
-        str = null;
+    if(typeof str === "undefined")
+        str = "";
         return str;
     }%';
     $i++;
-    print'<th class="sorting">';
+    print'<th class="essential">';
     print 'Référence pièce';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "reference";
-    $obj->aoColumns[$i]->fnRender = '%function(obj) {
-    var str = obj.aData.reference;
-    if(typeof str === $undefined$)
-        str = null;
-        return str;
-    }%';    
+    $obj->aoColumns[$i]->sDefaultContent = "";
     $i++;
-    print'<th class="sorting">';
+    print'<th class="essential">';
     print 'Numéro de série';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "serie";
-    $obj->aoColumns[$i]->fnRender = '%function(obj) {
-    var str = obj.aData.serie;
-    if(typeof str === $undefined$)
-        str = null;
-        return str;
-    }%';    
+    $obj->aoColumns[$i]->sDefaultContent = "";
     $i++;
-    print'<th class="sorting">';
+    print'<th class="essential">';
     print 'Emplacement';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "emplacement";
-    $obj->aoColumns[$i]->fnRender = '%function(obj) {
-    var str = obj.aData.emplacement;
-    if(typeof str === $undefined$)
-        str = null;
-        return str;
-    }%';    
-    
+    $obj->aoColumns[$i]->sDefaultContent = "";
     $i++;
-    print'<th class="sorting">';
+    print'<th class="essential">';
     print 'Check';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = null;
@@ -293,39 +283,42 @@ print'<thead>';
     "sButtonText"=>"Mouvement Interne"
      ));
               
-    
-print'</thead>';
-$i=1;
-
-print'<thead class="recherche">';
-print'<tr>';
-print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search opérateur") . '" class="inputSearch"/></td>';
-$i++;
-print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search date et heure") . '" class="inputSearch" /></td>';
-$i++;
-print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Num tracking") . '" class="inputSearch" /></td>';
-$i++;
-print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Mouv colis") . '" class="inputSearch" /></td>';
-$i++;
-print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Réf pièce") . '" class="inputSearch" /></td>';
-$i++;
-print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Num série") . '" class="inputSearch" /></td>';
-$i++;
-print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Emplacement") . '" class="inputSearch" /></td>';
-
 print'</tr>';
 print'</thead>';
-
-
+$i=0;
+print'<tfoot>';
+print'<tr>';
+print'<th id='.$i.'></th>';
+$i++;
+print'<th id='.$i.'><input type="text" placeholder="' . $langs->trans("Search opérateur") . '" /></th>';
+$i++;
+print'<th id='.$i.'><input type="text" placeholder="' . $langs->trans("Search date et heure") . '" /></th>';
+$i++;
+print'<th id='.$i.'><input type="text" placeholder="' . $langs->trans("Search Num tracking") . '" /></th>';
+$i++;
+print'<th id='.$i.'><input type="text" placeholder="' . $langs->trans("Search Mouv colis") . '" /></th>';
+$i++;
+print'<th id='.$i.'><input type="text" placeholder="' . $langs->trans("Search Réf pièce") . '" /></th>';
+$i++;
+print'<th id='.$i.'><input type="text" placeholder="' . $langs->trans("Search Num série") . '" /></th>';
+$i++;
+print'<th id='.$i.'><input type="text" placeholder="' . $langs->trans("Search Emplacement") . '" /></th>';
+$i++;
+print'<th id='.$i.'></th>';
+$i++;
+print'</tr>';
+print'</tfoot>';
 print'<tbody>';
 print'</tbody>';
-        
-print $object->_datatables($obj,"#mouvement");
 
 print'</table>';
+        
+print $object->_datatables($obj,"mouvement",true,true);
+
+
 
 /* init key editable tool */
-print'<script type="text/javascript" charset="utf-8">
+/*print'<script type="text/javascript" charset="utf-8">
        $(document).ready(function() {';
 print'columns = ["operateur","datetime","tracking","codemouv","reference","serie","emplacement","check"];';
 
@@ -367,20 +360,24 @@ print'var keys = new KeyTable( {
                     setTimeout( function () {$(nCell).click();}, 0 );
                  }
                  else keys.block = false;   
-    });';
+    });';*/
 
 /* init default sorting */
-print'oTable.fnSort( [[2,"desc"]]);';
+//print'oTable.fnSort( [[2,"desc"]]);';
 
 /*seach on column */
-print '$("thead input").keyup( function () {
+/*print '$("thead input").keyup( function () {
 		/* Filter on the column (the index) of this element */
-		var index = $("thead input").index(this)+1;
+		/*var index = $("thead input").index(this)+1;
                 oTable.fnFilter( this.value, (index));
 });';
 
 print'});';
-print '</script>';
+print '</script>';*/
 
+print end_box();
+print '</div>';
+
+llxFooter();
 
 ?>
