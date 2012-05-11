@@ -111,20 +111,8 @@ if(isset($_POST['tableData'])){
 /* active datatable js */
 $arrayjs = array();
 $arrayjs[0] = "/custom/stock2/lib/datatables/js/indicateurTracking.js";
-$arrayjs[1] = "/custom/stock2/lib/datatables/js/KeyTable.js";
 
 llxHeader("","","","","","",$arrayjs);
-print'<style type="text/css" media="screen">';
-print'
-table.KeyTable td.focus {
-    border: 3px solid #3366FF;
-}
-table.KeyTable td{
-    border:none;
-    
-}';
-print '</style>';
-
 print'<div class="row">';
 print start_box("Saisie des mouvements","twelve","16-Download.png",true,true);
 
@@ -166,6 +154,7 @@ print'<tr>';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "_id";
     $obj->aoColumns[$i]->bVisible = false;
+    
     $i++;
     print'<th class="essential">';
     print 'Nom operateur';
@@ -177,6 +166,7 @@ print'<tr>';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "datetime";
     $obj->aoColumns[$i]->sType="date";
+    $obj->aoColumns[$i]->sClass = "edit";
     $obj->aoColumns[$i]->fnRender = '%function(obj) {
     if(obj.aData.datetime)
     {
@@ -191,12 +181,14 @@ print'<tr>';
     print 'Numero de tracking';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "tracking";
+    $obj->aoColumns[$i]->sClass = "edit";
     $obj->aoColumns[$i]->sDefaultContent = "";
     $i++;
     print'<th class="essential">';
     print 'Mouvement colis';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "codemouv";
+    $obj->aoColumns[$i]->sClass = "edit";
     $obj->aoColumns[$i]->sDefaultContent = "";
     $obj->aoColumns[$i]->fnRender = '%function(obj) {
     var str = obj.aData.codeprestataire+obj.aData.codemouv;
@@ -209,18 +201,21 @@ print'<tr>';
     print 'Référence pièce';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "reference";
+    $obj->aoColumns[$i]->sClass = "edit";
     $obj->aoColumns[$i]->sDefaultContent = "";
     $i++;
     print'<th class="essential">';
     print 'Numéro de série';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "serie";
+    $obj->aoColumns[$i]->sClass = "edit";
     $obj->aoColumns[$i]->sDefaultContent = "";
     $i++;
     print'<th class="essential">';
     print 'Emplacement';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "emplacement";
+    $obj->aoColumns[$i]->sClass = "edit";
     $obj->aoColumns[$i]->sDefaultContent = "";
     $i++;
     print'<th class="essential">';
@@ -253,7 +248,7 @@ print'<tr>';
                         ],
                 "success": oConfig.fnAjaxComplete,
                 "dataType": "json",
-                "type": "POST", 
+                "type": "POST",
                 "cache": false,
                 "error": function () {
                     alert( "Error detected when sending table data to server" );
@@ -326,63 +321,8 @@ print'<tbody>';
 print'</tbody>';
 
 print'</table>';
-        
+$obj->aaSorting = array(array(2, "desc"));
 print $object->_datatables($obj,"mouvement",true,true);
-
-
-
-/* init key editable tool */
-print'<script type="text/javascript" charset="utf-8">
-       $(document).ready(function() {';
-print'columns = ["operateur","datetime","tracking","codemouv","reference","serie","emplacement","check"];';
-
-print'var keys = new KeyTable( {
-        "table": document.getElementById(\'mouvement\'),
-        "focus": [ 0, 0 ]
-    });
-    keys.event.action( null, null, function (nCell) {
-		keys.block = true;
-                
-	        var column = keys.fnGetCurrentPosition()[0];	    
-                if(column!=0 && column!=1 && column!=7){
-    
-                    $(nCell).editable( "mouvement.php", {
-                    "callback": function( sValue ) {
-                      keys.block = false;    
-                         
-                    },
-                    "placeholder" : "",
-                    "submitdata":function (obj) {
-                        var posi = oTable.fnGetPosition(nCell);
-                        var trNodes = oTable.fnGetNodes(posi[0]);
-                        
-                        var test = oTable.fnGetData(trNodes);
-                        var idrow = oTable.fnGetData(posi[0],0);
-                        
-                                                    return {
-                                                            "idrow": idrow,
-                                                            "column": columns[posi[1]]                                                      
-                                                    };
-                                                   
-                    },
-                    "onreset": function(){ 
-				setTimeout( function () {keys.block = false;}, 0); 
-                                
-                    },
-                    "onblur": "submit" 
-                    });
-                    setTimeout( function () {$(nCell).click();}, 0 );
-                 }
-                 else keys.block = false;   
-    });';
-
-/* init default sorting */
-print'oTable.fnSort( [[2,"desc"]]);';
-
-
-print'});';
-print '</script>';
-
 print end_box();
 print '</div>';
 

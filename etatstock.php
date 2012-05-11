@@ -27,7 +27,7 @@ $res=@include("../../main.inc.php");									// For "custom" directory
 if (! $res) $res=@include("../main.inc.php");
 dol_include_once("/stock2/class/stock2.class.php");
 
-$object = new Stock($db);
+$object = new Stock2($db);
 
 /*if($_GET['entrepot'] && $_GET['display']){
      //$result = $object->getView("listByPrestataire",$_GET['entrepot']);
@@ -129,6 +129,10 @@ $i++;
     else{
         $optionsDisplay .= '<option  value="piece">Par Pièce</option>';
     }
+    
+print'<div class="row">';
+print start_box("Selection","twelve","16-Download.png",true,true);
+    
 print'<form class="entete_etatstock" action="etatstock.php" method="post">';
 
 print'<label>'.$langs->trans("Affichage : ") .'</label>';
@@ -139,6 +143,13 @@ print'<select id="entrepot" name="entrepot">'.$options.'</select>';
 
 print'<input type="submit" class="submit" value="'. $langs->trans("Valider").'">';
 print'</form>';
+
+print end_box();
+print'</div>';
+
+print'<div class="row">';
+print start_box("Liste des stocks","twelve","16-List-w_-Images.png",false,false);
+
 
 $i=0;
 $obj=new stdClass();
@@ -227,6 +238,7 @@ print'<thead>';
     print 'Emplacement';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "emplacement";
+    $obj->aoColumns[$i]->sDefaultContent = "";
     $obj->aoColumns[$i]->fnRender = '%function(obj) {
     var str = obj.aData.emplacement;
     if(typeof str === $undefined$)
@@ -238,6 +250,7 @@ print'<thead>';
     print 'Référence pièce';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "reference";
+    $obj->aoColumns[$i]->sDefaultContent = "";
     $obj->aoColumns[$i]->fnRender = '%function(obj) {
     var str = obj.aData.reference;
     if(typeof str === $undefined$)
@@ -250,6 +263,7 @@ print'<thead>';
     print 'Numéro de série';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "serie";
+    $obj->aoColumns[$i]->sDefaultContent = "";
     $obj->aoColumns[$i]->fnRender = '%function(obj) {
     var str = obj.aData.serie;
     if(typeof str === $undefined$)
@@ -304,33 +318,26 @@ $obj->aoColumnDefs=array(array("bVisible"=>false,"aTargets"=>array(0)));
 $obj->aaSortingFixed=array(array(0,'asc'));
 $obj->aaSorting=array(array(1,'asc'));
 $i=1;
-print'<thead class="recherche">';
+print'<tfoot>';
 print'<tr>';
-print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Réf pièce") . '" class="inputSearch"/></td>';
+print'<tr>';
+print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Réf pièce") . '"/></td>';
 $i++;
-print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Num série") . '" class="inputSearch" /></td>';
+print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Num série") . '"/></td>';
 $i++;
-print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Quantité") . '" class="inputSearch" /></td>';
+print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Quantité") .  '"/></td>';
 
 print'</tr>';
-print'</thead>';
+print'</tfoot>';
 
 print'<tbody>';
 print'</tbody>';
-
-print $object->_datatables($obj,"#etatstock");
-
+print $object->_datatables($obj,"etatstock",true,true);
 print'</table>';
 
-print'<script type="text/javascript" charset="utf-8">
-       $(document).ready(function() {';
-       /*seach on column */
-print '$("thead input").keyup( function () {
-		/* Filter on the column (the index) of this element */
-		var index = $("thead input").index(this)+1;
-                oTable.fnFilter( this.value, (index));
-});';
-print'});';
-print '</script>';
+print end_box();
+print '</div>';
+
+llxFooter();
 
 ?>
