@@ -129,7 +129,7 @@ $i++;
     else{
         $optionsDisplay .= '<option  value="piece">Par Pièce</option>';
     }
-    print'<form class="entete_etatstock" action="etatstock.php" method="post">';
+print'<form class="entete_etatstock" action="etatstock.php" method="post">';
 
 print'<label>'.$langs->trans("Affichage : ") .'</label>';
 print'<select id="display" name="display">'.$optionsDisplay.'</select>';
