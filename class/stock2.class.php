@@ -44,6 +44,7 @@ class Stock2 extends CommonObject
        // date_default_timezone_set('UTC');
        // $s = time(); 
          $timestamp = dol_now();
+         
          $code = substr($codemouv, 4);
          $prestataire = substr($codemouv,0,4);
          $tracking = trim($tracking);
@@ -90,41 +91,20 @@ class Stock2 extends CommonObject
             return $col;   
             
      }
-     public function getView($name)
+     public function getView($name,$startkey="",$endkey="")
      {
         global $conf;
         if($name=="list")
-            return $this->couchdb->limit(/*$conf->liste_limit*/1000)->getView($this->class,$name);
+            return $this->couchdb->getView($this->class,$name);
+        else if($name=="listByDate")
+           return $this->couchdb->startkey($startkey)->endkey($endkey)->getView($this->class,$name);
         else 
             return $this->couchdb->group(true)->group_level(1)->getView($this->class,$name);
      }
-     public function getNb()
-     {
-         return $this->couchdb->group(true)->group_level(1)->getView($this->class,'test');
-     }
+
      public function createView($name){
-         //$doc = $this->load("_design/mouvement");
-         //$field = $doc->;
-         //$obj[$i]->_id="_design/".$name;
-         //$obj[$i]->_id="_design/".$name;
-         //$obj[$i]->language="javascript";
-        // $obj->_id="_design/mouvement";
-        // $obj->language="javascript";
-         /*$obj[$i]->views->$name->map='function(doc){
-            if(doc.class=="mouvement" && doc.reference && doc.codeprestataire=="'.$name.'")		
-                emit(doc.reference, {"reference":doc.reference,"emplacement":doc.emplacement,"codemouv":doc.codemouv});
-             
-            }';
-         $obj[$i]->views->$name->reduce='function(key, values, rereduce){
-                    var cpt =0;
-                    for(var i= 0; i < values.length; i++){
-                        if(values[i].codemouv=="300" || values[i].codemouv=="900") cpt++;
-                        if(values[i].codemouv=="400") cpt--;
-                    }
-                    var out={"reference":values[0].reference,"emplacement":values[0].emplacement,"quantite":cpt}		
-                    return out;
-            }';*/
-         $doc = $this->couchdb->getDoc("_design/mouvement");
+         
+         $doc = $this->db->getDoc("_design/mouvement");
          $doc->views->$name->map='function(doc){
             if(doc.class=="mouvement" && doc.reference && doc.codeprestataire=="'.$name.'")		
                 emit(doc.reference, {"reference":doc.reference,"serie":doc.serie,"emplacement":doc.emplacement,"codemouv":doc.codemouv});
@@ -154,51 +134,5 @@ class Stock2 extends CommonObject
 
 
      }
-     
-    
-    /*
-    function getList(){
-          global $conf;
-          try {
-             //return $this->couchdb->limit(5)->getView('mouvement','list'); 
-             return $this->couchdb->getView('mouvement','list'); 
-          } catch (Exception $exc) {
-              return -1;
-          }
-
-          
-    }
-    function updateDoc(){
-        $key = $_POST['idrow'];
-        $field = $_POST['column'];
-        $value = $_POST['value'];
-        
-        try {
-        $doc =  $this->load($key);
-        $doc->set($field,$value);
-        $doc->record();
-         return $value;
-        } catch (Exception $exc) {
-            echo $exc->getTraceAsString();
-           return ""; 
-        }
-    }
-    function updateDocSpecial(){
-        $key = $_POST['idrow'];
-        $value = $_POST['value'];
-        $code = substr($value, 4);
-        $prestataire = substr($value,0,4);
-        try {
-        $doc =  $this->load($key);
-        $doc->set("codeprestataire",$prestataire);
-        $doc->set("codemouv",$code);
-        $doc->record();
-        return $value;
-         } catch (Exception $exc) {
-            echo $exc->getTraceAsString();
-           return ""; 
-        }
-    }
-*/
 }
 ?>
