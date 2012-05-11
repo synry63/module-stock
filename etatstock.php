@@ -25,9 +25,9 @@
  */
 $res=@include("../../main.inc.php");									// For "custom" directory
 if (! $res) $res=@include("../main.inc.php");
-dol_include_once("/stock/class/stock.class.php");
+dol_include_once("/stock2/class/stock2.class.php");
 
-$object = new Stock($couch);
+$object = new Stock($db);
 
 /*if($_GET['entrepot'] && $_GET['display']){
      //$result = $object->getView("listByPrestataire",$_GET['entrepot']);

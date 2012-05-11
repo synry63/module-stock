@@ -109,29 +109,43 @@ if(isset($_POST['tableData'])){
     exit;
 }
 /* active datatable js */
-/*$arrayjs = array();
-$arrayjs[0] = "/custom/stock/lib/datatables/js/jquery.jeditable.js";
-$arrayjs[1] = "/custom/stock/lib/datatables/js/jquery.dataTables.js";
-$arrayjs[2] = "/custom/stock/lib/datatables/js/KeyTable.js";
-$arrayjs[3] = "/custom/stock/lib/datatables/js/indicateurTracking.js";
-$arrayjs[6] = "/custom/stock/lib/datatables/js/TableTools.js";
-$arrayjs[7] = "/custom/stock/lib/datatables/js/ZeroClipboard.js";*/
+$arrayjs = array();
+$arrayjs[0] = "/custom/stock2/lib/datatables/js/indicateurTracking.js";
+$arrayjs[1] = "/custom/stock2/lib/datatables/js/KeyTable.js";
 
-llxHeader();
+llxHeader("","","","","","",$arrayjs);
+print'<style type="text/css" media="screen">';
+print'
+table.KeyTable td.focus {
+    border: 3px solid #3366FF;
+}
+table.KeyTable td{
+    border:none;
+    
+}';
+print '</style>';
 
 print'<div class="row">';
 print start_box("Saisie des mouvements","twelve","16-Download.png",true,true);
 
 /*tableau de saisie rapide */
-print'<form class="mouvement" action="mouvement.php" method="post">';
-print'<div class="entete">';
-    print'<h3>Saisie pièce</h3>';
-    print'<p class="compteur"> Scanné :</p> <span class="cpt">0</span>';
+
+print'<form class="nice" action="mouvement.php" method="post">';
+print '<div style="text-align:center";>';
+print'<h5 style="display:inline;" class="sepH_b"> Colis Scannés :</h5> <span class="cpt">0</span>';
+print '</div>';
+print '<div class="formRow elVal">';
+    print '<label for="tracking">Numéro de Tracking</label>';
+    print'<textarea id="tracking" name="tracking" placeholder="Numéro de Tracking" class="auto_expand expand" rows="2" cols="1">';
+    print'</textarea>';
+print '</div>';
+print '<div class="formRow elVal">';
+    print '<label for="codemouv">Code Mouvement</label>';
+    print '<input type="text" placeholder="Code Mouvement" class="input-text small" name="nice_text_small" id="codemouv">';
 print'</div>';
-print'<textarea class="tracking" name="tracking"  placeholder="' . $langs->trans("num tracking") .'">';
-print'</textarea>';
-print'<input class="codemouv" type="text" name="mouv" placeholder="' . $langs->trans("Code mouv") .'"/>';
-print'<input type="submit" class="submit" value="'. $langs->trans("ajouter").'">';
+print'<div class="formRow">';
+    print'<button class="button small nice blue" type="submit">Ajouter</button>';
+print'</div>';
 print'</form>';
 
 print end_box();
@@ -318,7 +332,7 @@ print $object->_datatables($obj,"mouvement",true,true);
 
 
 /* init key editable tool */
-/*print'<script type="text/javascript" charset="utf-8">
+print'<script type="text/javascript" charset="utf-8">
        $(document).ready(function() {';
 print'columns = ["operateur","datetime","tracking","codemouv","reference","serie","emplacement","check"];';
 
@@ -360,20 +374,14 @@ print'var keys = new KeyTable( {
                     setTimeout( function () {$(nCell).click();}, 0 );
                  }
                  else keys.block = false;   
-    });';*/
+    });';
 
 /* init default sorting */
-//print'oTable.fnSort( [[2,"desc"]]);';
+print'oTable.fnSort( [[2,"desc"]]);';
 
-/*seach on column */
-/*print '$("thead input").keyup( function () {
-		/* Filter on the column (the index) of this element */
-		/*var index = $("thead input").index(this)+1;
-                oTable.fnFilter( this.value, (index));
-});';
 
 print'});';
-print '</script>';*/
+print '</script>';
 
 print end_box();
 print '</div>';
