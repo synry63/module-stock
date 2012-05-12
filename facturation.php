@@ -26,8 +26,8 @@
 $res = @include("../../main.inc.php");         // For "custom" directory
 if (!$res)
     $res = @include("../main.inc.php");
-dol_include_once("/stock/class/stock.class.php");
-dol_include_once("/stock/lib/phptoexcel/Classes/PHPExcel.php");
+dol_include_once("/stock2/class/stock2.class.php");
+dol_include_once("/stock2/lib/phptoexcel/Classes/PHPExcel.php");
 
 
 $arraym = array("", "janvier", "fevrier", "mars", "avril", "mai", "juin","juillet","aout","septembre","octobre","novembre","decembre");
@@ -46,21 +46,39 @@ for ($i = 2012; $i <= $maxa; $i++) {
 $arrayjs = array();
 llxHeader('', '', '', '', '', '', $arrayjs);
 
-print'<form class="entete_etatstock" action="facturation.php" method="post">';
+print'<div class="row">';
+print start_box("Facturation","twelve","16-Download.png",true,true);
 
-print'<label>' . $langs->trans("Année ") . '</label>';
-print'<select id="display" name="annee">' . $optionA . '</select>';
+print'<form class="nice custom" action="facturation.php" method="post" style>';
 
-print'<label>' . $langs->trans("Mois :  ") . '</label>';
-print'<select id="entrepot" name="mois">' . $optionM . '</select>';
-
-print'<input type="submit" class="submit" value="' . $langs->trans("Valider") . '">';
+print '<div class="formRow" style>';
+    print '<label for="nice_select">Année</label>';
+    print '<select  name="annee" id="nice_select">';
+        print $optionA;
+    print'</select>';    
+print '</div>';
+print '<div class="formRow" style>';
+    print '<label for="nice_select2">Mois</label>';
+    print '<select  name="mois" id="nice_select2">';
+        print $optionM;
+    print'</select>';    
+print'</div>';
+print'<div class="formRow" style>';
+    print'<button class="button small nice blue" type="submit">Valider</button>';
+print'</div>';
 print'</form>';
+
+print end_box();
+print'</div>';
+
+print'<div class="row">';
+print start_box("Excel","twelve","16-List-w_-Images.png",false,false);
+
 
 if ($_POST) {
     $mois = $_POST['mois'];
     $annee = $_POST['annee'];
-    $object = new Stock($couch);
+    $object = new Stock2($db);
     $timestampd = mktime(0, 0, 0, $mois, 1, $annee); //ex : mai 2012 :  1335823200
     $timestampf = mktime(0, 0, 0, ($mois + 1), 1, $annee); // ex : juin 2012 : 1338501600
     $viewname = "listByDate";
@@ -87,16 +105,30 @@ if ($_POST) {
         $objPHPExcel->setActiveSheetIndex(0);
 
         // Save Excel 2007 file
-        print "<p style='font-size:20px;'>".date('H:i:s')." Fichier Excel2007 Généré pour ".date("F",$timestampd)." ".date("Y",$timestampd)." : <a href='facturation.xlsx'>ICI</a></p>\n";
         $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
         try {
             $objWriter->save(str_replace('.php', '.xlsx', __FILE__));
+            print'<div style="font-size:14px;" class="alert-box success">'.date('H:i:s').' Fichier créé avec success
+                     <a href="javascript:void(0)" class="close">×</a>
+                  </div>';
+            print "<p style='font-size:20px;'> Fichier Excel2007 Généré pour ".date("F",$timestampd)." ".date("Y",$timestampd)." : <a href='facturation.xlsx'>ICI</a></p>\n";
+        
         } catch (Exception $e) {
-            print $e->getMessage();
+            print '<div style="font-size:14px;" class="alert-box error">
+                '.date('H:i:s').' Erreur lors de la création du fichier 
+                  <a href="javascript:void(0)" class="close">×</a>
+                </div>';
         }
     }
-    else print "<p style='font-size:20px;'>".date('H:i:s')." Aucun mouvement sur cette période</p>\n";
+    else print '<div style="font-size:14px;" class="alert-box error">
+                '.date('H:i:s').' Aucun mouvement sur cette période
+                  <a href="javascript:void(0)" class="close">×</a>
+                </div>';
+        
         
 }
+print end_box();
+print '</div>';
 
+llxFooter();
 ?>
