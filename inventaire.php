@@ -32,17 +32,12 @@ if (! $res) $res=@include("../main.inc.php");
 
 /* active datatable js */
 $arrayjs = array();
-$arrayjs[0] = "/custom/stock/lib/datatables/js/jquery.jeditable.js";
-$arrayjs[1] = "/custom/stock/lib/datatables/js/jquery.dataTables.js";
-$arrayjs[2] = "/custom/stock/lib/datatables/js/initXHR.js";
-$arrayjs[3] = "/custom/stock/lib/datatables/js/KeyTable.js";
-$arrayjs[4] = "/custom/stock/lib/datatables/js/initDatatablesInventaire.js";
-$arrayjs[5] = "/custom/stock/lib/datatables/js/addData.js";
-
 llxHeader('', '', '', '', '', '', $arrayjs);
 
+print'<div class="row">';
+print start_box("Selection","twelve","16-Download.png",true,true);
 /* inventaire total */ 
-print'<form class="inventaire_total">';
+/*print'<form class="inventaire_total">';
 print'<div class="entete">';
     print'<h3>Inventaire Total </h3>';
     print'<div class="choixentrepot">';
@@ -58,7 +53,7 @@ print'<input class="entrepot" type="text" placeholder="' . $langs->trans("Entrep
 print'<input type="submit" class="submit" value="'. $langs->trans("ajouter").'">';
 print'</form>';
 
-/* inventaire partiel */
+// inventaire partiel 
 print'<form class="inventaire_partiel">';
 print'<div class="entete">';
 print'<h3>Inventaire Partiel </h3>';
@@ -79,6 +74,16 @@ print'<div class="piece_inventaire">';
 print'</div>';
 print'</form>';
 print '<table cellpadding="0" cellspacing="0" border="0" class="display" id="mouvement">';
+*/
+print end_box();
+print'</div>';
+
+
+print'<div class="row">';
+print start_box("Inventaire","twelve","16-List-w_-Images.png",false,false);
+
+$i=0;
+$obj=new stdClass();
 
 /*table views */
 print'<thead>';
@@ -112,10 +117,15 @@ print'</thead>';
 
 
 print'<tbody>';
+print $object->_datatables($obj,"inventaire",true,true);
 print'</tbody>';
 
 print'</table>';
-print'<br/>';
-print'<p style="margin:10px;"> Total pièces Scannées : 1 </p>';
+
+print end_box();
+print '</div>';
+
+llxFooter();
+
 
 ?>

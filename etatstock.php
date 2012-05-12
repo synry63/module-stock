@@ -96,35 +96,22 @@ if($_GET['json'])
 }
 llxHeader('', '', '', '', '', '', '');
 // init list entrepot option
-$arrayp = array("dell","cisc");
-$i=0;
-    
-    if($_POST['entrepot']==$arrayp[$i])
-        $options = '<option selected="selected" value="dell">Dell</option>';
-    else $options = '<option  value="dell">Dell</option>';
-$i++;
-    if($_POST['entrepot']==$arrayp[$i])
-        $options .= '<option selected="selected" value="cisc">Cisco</option>';
-    else $options .= '<option value="cisc">Cisco</option>';
-$i++;
-
+$arrayp = array("Dell"=>"dell","Cisco"=>"cisc");
+//$size = sizeof($arrayp);
+foreach ($arrayp as $key => $value){
+    if($value==$_POST['entrepot'])
+        $options .= '<option selected="selected" value="'.$value.'">'.$key.'</option>';
+    else
+        $options .= '<option  value="'.$value.'">'.$key.'</option>';
+}
 // init type affichage option
-$arrayt = array("empl","piece");
-$i=0;
-    if($_POST['display']==$arrayt[$i]){
-        $optionsDisplay.= '<option selected="selected" value="empl">Par Emplacement</option>';
-    }
-    else{
-        $optionsDisplay.= '<option value="empl">Par Emplacement</option>';
-    }
-$i++;    
-    if($_POST['display']==$arrayt[$i]){
-        $optionsDisplay .= '<option selected="selected"  value="piece">Par Pièce</option>';
-    }
-    else{
-        $optionsDisplay .= '<option  value="piece">Par Pièce</option>';
-    }
-    
+$arrayt = array("Par Emplacement"=>"empl","Par Pièce"=>"piece");
+foreach ($arrayt as $key => $value){
+    if($value==$_POST['display'])
+        $optionsDisplay .= '<option selected="selected" value="'.$value.'">'.$key.'</option>';
+    else
+        $optionsDisplay .= '<option  value="'.$value.'">'.$key.'</option>';
+}
 print'<div class="row">';
 print start_box("Selection","twelve","16-Download.png",true,true);
 
