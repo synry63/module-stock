@@ -96,7 +96,7 @@ class modStock2 extends DolibarrModules
 		//
 		// Example to declare a new Top Menu entry and its Left menu entry:
 		 $this->menu[$r]=array(	'fk_menu'=>0,			                // Put 0 if this is a top menu
-		     '_id'=>'menu:toto',
+		     '_id'=>'menu:stock2',
 		    'type'=>'top',			                // This is a Top menu entry
 		    'titre'=>'Gestion Stock',
 		    'url'=>'/stock2/mouvement.php',
@@ -107,7 +107,7 @@ class modStock2 extends DolibarrModules
 		    'target'=>'',
 		    'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		 $r++;
-		 $this->menu[$r]=array(	'fk_menu'=>'menu:toto',		                // Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
+		 $this->menu[$r]=array(	'fk_menu'=>'menu:stock2',		                // Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
 		    'type'=>'',			                // This is a Left menu entry
 		    '_id'=>'menu:mouvementstock2',
 		    'titre'=>'Mouvement',
@@ -119,7 +119,7 @@ class modStock2 extends DolibarrModules
 		    'target'=>'',
 		    'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		$r++;
-                $this->menu[$r]=array(	'fk_menu'=>'menu:toto',		                // Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
+                $this->menu[$r]=array(	'fk_menu'=>'menu:stock2',		                // Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
 		    'type'=>'',			                // This is a Left menu entry
 		    '_id'=>'menu:etatstock2',
 		    'titre'=>'Etat stock',
@@ -131,7 +131,7 @@ class modStock2 extends DolibarrModules
 		    'target'=>'',
 		    'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		$r++;
-                $this->menu[$r]=array(	'fk_menu'=>'menu:toto',		                // Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
+                $this->menu[$r]=array(	'fk_menu'=>'menu:stock2',		                // Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
 		    'type'=>'',			                // This is a Left menu entry
 		    '_id'=>'menu:inventairestock2',
 		    'titre'=>'Inventaire',
@@ -143,7 +143,7 @@ class modStock2 extends DolibarrModules
 		    'target'=>'',
 		    'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		$r++;
-                $this->menu[$r]=array(	'fk_menu'=>'menu:toto',		                // Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
+                $this->menu[$r]=array(	'fk_menu'=>'menu:stock2',		                // Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
 		    'type'=>'',			                // This is a Left menu entry
 		    '_id'=>'menu:facturationsstock2',
 		    'titre'=>'Facturation',
