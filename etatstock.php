@@ -94,16 +94,11 @@ if($_GET['json'])
     echo json_encode($output);
     exit;
 }
-/* active datatable js */
-$arrayjs = array();
-$arrayjs[0] = "/custom/stock/lib/datatables/js/jquery.dataTables.js";
-
-//$arrayjs[1] = "/custom/stock/lib/datatables/js/initDatatablesEtatstock.js";
-llxHeader('', '', '', '', '', '', $arrayjs);
+llxHeader('', '', '', '', '', '', '');
 // init list entrepot option
 $arrayp = array("dell","cisc");
 $i=0;
-
+    
     if($_POST['entrepot']==$arrayp[$i])
         $options = '<option selected="selected" value="dell">Dell</option>';
     else $options = '<option  value="dell">Dell</option>';
@@ -117,10 +112,10 @@ $i++;
 $arrayt = array("empl","piece");
 $i=0;
     if($_POST['display']==$arrayt[$i]){
-        $optionsDisplay = '<option selected="selected" value="empl">Par Emplacement</option>';
+        $optionsDisplay.= '<option selected="selected" value="empl">Par Emplacement</option>';
     }
     else{
-        $optionsDisplay = '<option value="empl">Par Emplacement</option>';
+        $optionsDisplay.= '<option value="empl">Par Emplacement</option>';
     }
 $i++;    
     if($_POST['display']==$arrayt[$i]){
@@ -132,16 +127,24 @@ $i++;
     
 print'<div class="row">';
 print start_box("Selection","twelve","16-Download.png",true,true);
-    
-print'<form class="entete_etatstock" action="etatstock.php" method="post">';
 
-print'<label>'.$langs->trans("Affichage : ") .'</label>';
-print'<select id="display" name="display">'.$optionsDisplay.'</select>';
+print'<form class="nice custom" action="etatstock.php" method="post" style>';
 
-print'<label>'.$langs->trans("Entrepôt : ") .'</label>';
-print'<select id="entrepot" name="entrepot">'.$options.'</select>';
-
-print'<input type="submit" class="submit" value="'. $langs->trans("Valider").'">';
+print '<div class="formRow" style>';
+    print '<label for="nice_select">Affichage</label>';
+    print '<select  name="display" id="nice_select">';
+        print $optionsDisplay;
+    print'</select>';    
+print '</div>';
+print '<div class="formRow" style>';
+    print '<label for="nice_select">Entrepôt</label>';
+    print '<select  name="entrepot" id="nice_select">';
+        print $options;
+    print'</select>';    
+print'</div>';
+print'<div class="formRow" style>';
+    print'<button class="button small nice blue" type="submit">Valider</button>';
+print'</div>';
 print'</form>';
 
 print end_box();
@@ -154,49 +157,53 @@ print start_box("Liste des stocks","twelve","16-List-w_-Images.png",false,false)
 $i=0;
 $obj=new stdClass();
 /*table views */
-print '<table cellpadding="0" cellspacing="0" border="0" class="display" id="etatstock">';
+print '<table class="display dt_act" id="etatstock">';
 if($_POST['display']=="piece"){
 print'<thead>';
-    print'<th class="sorting">';
+    print'<th>';
     print ' ';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "reference";
-    $obj->aoColumns[$i]->fnRender = '%function(obj) {
+    $obj->aoColumns[$i]->sDefaultContent = "";
+    /*$obj->aoColumns[$i]->fnRender = '%function(obj) {
     var str = obj.aData.reference;
     if(typeof str === $undefined$)
         str = null;
         return str;
-    }%';    
+    }%'; */   
     $i++;
     
-    print'<th class="sorting">';
+    print'<th class="essential">';
     print 'Emplacement';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "emplacement";
-    $obj->aoColumns[$i]->fnRender = '%function(obj) {
+    $obj->aoColumns[$i]->sDefaultContent = "";
+   /* $obj->aoColumns[$i]->fnRender = '%function(obj) {
     var str = obj.aData.emplacement;
     if(typeof str === $undefined$)
         str = null;
         return str;
-    }%';   
+    }%';   */
     $i++;
     
-    print'<th class="sorting">';
+    print'<th class="essential">';
     print 'Numéro de série';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "serie";
-    $obj->aoColumns[$i]->fnRender = '%function(obj) {
+    $obj->aoColumns[$i]->sDefaultContent = "";
+   /* $obj->aoColumns[$i]->fnRender = '%function(obj) {
     var str = obj.aData.serie;
     if(typeof str === $undefined$)
         str = null;
         return str;
-    }%';  
+    }%';*/    
     $i++;
     
-   print'<th class="sorting">';
+   print'<th class="essential">';
     print 'Quantité';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "quantite";
+    $obj->aoColumns[$i]->sDefaultContent = "";
     $obj->aoColumns[$i]->sClass = "center";
 
     
@@ -230,52 +237,63 @@ $obj->fnDrawCallback = "%function(oSettings){
                 }
     }%";
 
-
+$i=1;
+print'<tfoot>';
+print'<tr>';
+print'<td></td>';
+print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Emplacement") . '"/></td>';
+$i++;
+print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Num série") . '"/></td>';
+$i++;
+print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Quantité") .  '"/></td>';
+print'</tr>';
+print'</tfoot>';
 }
 else{   
 print'<thead>';
-    print'<th class="sorting">';
+    print'<th>';
     print 'Emplacement';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "emplacement";
     $obj->aoColumns[$i]->sDefaultContent = "";
-    $obj->aoColumns[$i]->fnRender = '%function(obj) {
+    /*$obj->aoColumns[$i]->fnRender = '%function(obj) {
     var str = obj.aData.emplacement;
     if(typeof str === $undefined$)
         str = null;
         return str;
-    }%';    
+    }%';*/    
     $i++;
-    print'<th class="sorting">';
+    print'<th class="essential">';
     print 'Référence pièce';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "reference";
     $obj->aoColumns[$i]->sDefaultContent = "";
-    $obj->aoColumns[$i]->fnRender = '%function(obj) {
+    /*$obj->aoColumns[$i]->fnRender = '%function(obj) {
     var str = obj.aData.reference;
     if(typeof str === $undefined$)
         str = null;
         return str;
-    }%';  
+    }%';*/  
     $i++;
     
-    print'<th class="sorting">';
+    print'<th class="essential">';
     print 'Numéro de série';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "serie";
     $obj->aoColumns[$i]->sDefaultContent = "";
-    $obj->aoColumns[$i]->fnRender = '%function(obj) {
+    /*$obj->aoColumns[$i]->fnRender = '%function(obj) {
     var str = obj.aData.serie;
     if(typeof str === $undefined$)
         str = null;
         return str;
-    }%';   
+    }%';*/   
     $i++;
     
-   print'<th class="sorting">';
+   print'<th class="essential">';
     print 'Quantité';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "quantite";
+    $obj->aoColumns[$i]->sDefaultContent = "";
     $obj->aoColumns[$i]->sClass = "center";
     
 print'</thead>';
@@ -308,6 +326,17 @@ $obj->fnDrawCallback = "%function(oSettings){
                 }
     }%";
     
+$i=1;
+print'<tfoot>';
+print'<tr>';
+print'<td></td>';
+print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Réf pièce") . '"/></td>';
+$i++;
+print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Num série") . '"/></td>';
+$i++;
+print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Quantité") .  '"/></td>';
+print'</tr>';
+print'</tfoot>';
 
 }
 $obj->fnServerParams ='%function ( aoData ) {
@@ -317,18 +346,6 @@ $obj->fnServerParams ='%function ( aoData ) {
 $obj->aoColumnDefs=array(array("bVisible"=>false,"aTargets"=>array(0)));
 $obj->aaSortingFixed=array(array(0,'asc'));
 $obj->aaSorting=array(array(1,'asc'));
-$i=1;
-print'<tfoot>';
-print'<tr>';
-print'<tr>';
-print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Réf pièce") . '"/></td>';
-$i++;
-print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Num série") . '"/></td>';
-$i++;
-print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Quantité") .  '"/></td>';
-
-print'</tr>';
-print'</tfoot>';
 
 print'<tbody>';
 print'</tbody>';

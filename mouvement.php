@@ -129,7 +129,7 @@ print '<div class="formRow elVal">';
 print '</div>';
 print '<div class="formRow elVal">';
     print '<label for="codemouv">Code Mouvement</label>';
-    print '<input type="text" placeholder="Code Mouvement" class="input-text small" name="nice_text_small" id="codemouv">';
+    print '<input type="text" placeholder="Code Mouvement" class="input-text small" name="mouv" id="codemouv">';
 print'</div>';
 print'<div class="formRow">';
     print'<button class="button small nice blue" type="submit">Ajouter</button>';
