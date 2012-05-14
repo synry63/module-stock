@@ -29,13 +29,12 @@ require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 class Stock2 extends CommonObject
 {
     public $element;
+    
     /*Constructor */
-    function Stock2($db){
-	global $conf;
+    function __construct($db){
 	
-        $this->element="mouvement";
+	parent::__construct($db);
 	
-        parent::__construct($db);
         return 1;
     }
     
@@ -49,18 +48,15 @@ class Stock2 extends CommonObject
          $prestataire = substr($codemouv,0,4);
          $tracking = trim($tracking);
          if($tracking!=""){
-            $array =  split("\n", $tracking);
+            $array =  explode("\n", $tracking);
             $size = sizeof($array);
             for($i=0;$i<$size;$i++){ 
-                $obj->class = $this->element;
-                $obj->operateur = $user->login;
-                $obj->datetime = $timestamp;
+                $obj->class = get_class($this);
+		$obj->UserCreate = $user->login;
+                $obj->tms = $timestamp;
                 $obj->tracking = $array[$i];
-                $obj->codeprestataire =  $prestataire;
+                $obj->codeprestataire = strtoupper($prestataire);
                 $obj->codemouv = $code;
-                $obj->reference = "";
-                $obj->serie = "";
-                $obj->emplacement = "";
                 $col[$i] = $obj;
                 $obj=null;
                 
@@ -69,44 +65,46 @@ class Stock2 extends CommonObject
           }
      }
      function createByButton($rowsid,$user,$codemouv){
-            $array =  split(" ", $rowsid);
+            $array =  explode(" ", $rowsid);
             $size = sizeof($array);
             $timestamp = dol_now();
             for($i=0;$i<$size;$i++){ 
-                $doc =  $this->load($array[$i]);
-                $obj->class = $this->element;
-                $obj->_id = uniqid();
-                $obj->operateur = $user->login;
-                $obj->datetime = $timestamp;
-                $obj->codemouv = $codemouv;
-                $obj->codeprestataire = $doc->codeprestataire;
-                $obj->tracking = $doc->tracking;
-                $obj->reference = $doc->reference;
-                $obj->serie = $doc->serie;
-                $obj->emplacement = $doc->emplacement;
-                $col[$i] = $obj;
-                $obj=null;
+                $this->fetch($array[$i]);
+                unset($this->values->_id);
+		unset($this->values->_rev);
+                $this->values->UserCreate = $user->login;
+                $this->values->tms = $timestamp;
+                $this->values->codemouv = $codemouv;
+		if($codemouv == 400)
+		    unset($this->values->tracking);
+                $col[$i] = $this->values;
             }
-            $this->couchdb->storeDocs($col);
-            return $col;   
-            
+            $result = $this->couchdb->storeDocs($col);
+	    foreach ($result as $key => $aRow)
+	    {
+		$col[$key]->_id = $aRow->id;
+	    }
+            return $col;
      }
+     
      public function getView($name,$startkey="",$endkey="")
      {
         global $conf;
         if($name=="list")
-            return $this->couchdb->getView($this->class,$name);
+            return $this->couchdb->getView(get_class ($this),$name);
         else if($name=="listByDate")
-           return $this->couchdb->startkey($startkey)->endkey($endkey)->getView($this->class,$name);
+           return $this->couchdb->startkey($startkey)->endkey($endkey)->getView(get_class ($this),$name);
         else 
-            return $this->couchdb->group(true)->group_level(1)->getView($this->class,$name);
+            return $this->couchdb->group(true)->group_level(1)->getView(get_class ($this),$name);
      }
 
      public function createView($name){
          
-         $doc = $this->db->getDoc("_design/mouvement");
+	 $name = strtoupper($name);
+	 
+         $doc = $this->db->getDoc("_design/".get_class());
          $doc->views->$name->map='function(doc){
-            if(doc.class=="mouvement" && doc.reference && doc.codeprestataire=="'.$name.'")		
+            if(doc.class=="'.get_class($this).'" && doc.reference && doc.codeprestataire=="'.$name.'")		
                 emit(doc.reference, {"reference":doc.reference,"serie":doc.serie,"emplacement":doc.emplacement,"codemouv":doc.codemouv});
              
             }';
