@@ -55,7 +55,7 @@ if($_GET['json'])
     "iTotalDisplayRecords" => 0,
     "aaData" => array()
     );
-    $viewname="dell";
+    $viewname="DELL";
     if($_GET['entrepot']) $viewname = $_GET['entrepot'];
     try {
        $result = $object->getView($viewname);

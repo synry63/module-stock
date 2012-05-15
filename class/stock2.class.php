@@ -102,7 +102,7 @@ class Stock2 extends CommonObject
          
 	 $name = strtoupper($name);
 	 
-         $doc = $this->db->getDoc("_design/".get_class());
+         $doc = $this->couchdb->getDoc("_design/".get_class());
          $doc->views->$name->map='function(doc){
             if(doc.class=="'.get_class($this).'" && doc.reference && doc.codeprestataire=="'.$name.'")		
                 emit(doc.reference, {"reference":doc.reference,"serie":doc.serie,"emplacement":doc.emplacement,"codemouv":doc.codemouv});
