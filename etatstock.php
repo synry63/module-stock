@@ -55,7 +55,7 @@ if($_GET['json'])
     "iTotalDisplayRecords" => 0,
     "aaData" => array()
     );
-    $viewname="dell";
+    $viewname="DELL";
     if($_GET['entrepot']) $viewname = $_GET['entrepot'];
     try {
        $result = $object->getView($viewname);
@@ -112,33 +112,9 @@ foreach ($arrayt as $key => $value){
     else
         $optionsDisplay .= '<option  value="'.$value.'">'.$key.'</option>';
 }
-print'<div class="row">';
-print start_box("Selection","twelve","16-Download.png",true,true);
-
-print'<form class="nice custom" action="etatstock.php" method="post" style>';
-
-print '<div class="formRow" style>';
-    print '<label for="nice_select">Affichage</label>';
-    print '<select  name="display" id="nice_select">';
-        print $optionsDisplay;
-    print'</select>';    
-print '</div>';
-print '<div class="formRow" style>';
-    print '<label for="nice_select">Entrepôt</label>';
-    print '<select  name="entrepot" id="nice_select">';
-        print $options;
-    print'</select>';    
-print'</div>';
-print'<div class="formRow" style>';
-    print'<button class="button small nice blue" type="submit">Valider</button>';
-print'</div>';
-print'</form>';
-
-print end_box();
-print'</div>';
 
 print'<div class="row">';
-print start_box("Liste des stocks","twelve","16-List-w_-Images.png",false,false);
+print start_box("Liste des stocks","twelve","16-List-w_-Images.png",false);
 
 
 $i=0;

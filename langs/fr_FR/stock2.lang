@@ -1,0 +1,16 @@
+# Dolibarr language file - fr_FR - highcharts
+CHARSET=UTF-8
+UserCreate=Opérateur
+Tracking=N° Tracking
+Collection=Entrepôt
+flowId=Mouvement
+Product=Référence
+SN=N° Série
+Spot=Emplacement
+Search User=Rechercher opérateur
+Search Date=Rechercher date
+Search Collection=Rechercher entrepôt
+Search flowId=Rechercher mouvement
+Search Product=Rechercher référence
+Search SN=Rechercher N° Série
+Search Spot=Rechercher emplacement

@@ -51,7 +51,7 @@ class modStock2 extends DolibarrModules
 		$this->family = "other";
 		$this->name = preg_replace('/^mod/i','',get_class($this));
 		$this->description = "Gestion de stock avec code à barre";
-		$this->version = 'development';
+		$this->version = '1.0';
 		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
 		// Where to store the module in setup page (0=common,1=interface,2=others,3=very specific)
 		$this->special = 0;
@@ -95,65 +95,89 @@ class modStock2 extends DolibarrModules
 		// Add here entries to declare new menus
 		//
 		// Example to declare a new Top Menu entry and its Left menu entry:
-		 $this->menu[$r]=array(	'fk_menu'=>0,			                // Put 0 if this is a top menu
-		     '_id'=>'menu:toto',
-		    'type'=>'top',			                // This is a Top menu entry
+		 $this->menu[$r]=array(	'fk_menu'=>0,
+		     '_id'=>'menu:stock2',
+		    'type'=>'top',
 		    'titre'=>'Gestion Stock',
 		    'url'=>'/stock2/mouvement.php',
-		    'langs'=>'',	                // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+		    'langs'=>'',
 		    'position'=>50,
-		    'enabled'=>true,	// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
-		    'perms'=>'1',			                // Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
+		    'enabled'=>true,
+		    'perms'=>'1',
 		    'target'=>'',
-		    'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
+		    'user'=>2);
 		 $r++;
-		 $this->menu[$r]=array(	'fk_menu'=>'menu:toto',		                // Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
-		    'type'=>'',			                // This is a Left menu entry
+		 $this->menu[$r]=array(	'fk_menu'=>'menu:stock2',
+		    'type'=>'',
 		    '_id'=>'menu:mouvementstock2',
 		    'titre'=>'Mouvement',
 		    'url'=>'/stock2/mouvement.php',
-		    'langs'=>'',	                // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+		    'langs'=>'',
 		    'position'=>0,
-		    'enabled'=> true,	// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
-		    'perms'=>'1',			                // Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
+		    'enabled'=> true,
+		    'perms'=>'1',
 		    'target'=>'',
-		    'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
+		    'user'=>2);
 		$r++;
-                $this->menu[$r]=array(	'fk_menu'=>'menu:toto',		                // Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
-		    'type'=>'',			                // This is a Left menu entry
+                $this->menu[$r]=array(	'fk_menu'=>'menu:stock2',
+		    'type'=>'',
 		    '_id'=>'menu:etatstock2',
 		    'titre'=>'Etat stock',
 		    'url'=>'/stock2/etatstock.php',
-		    'langs'=>'',	                // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+		    'langs'=>'',
 		    'position'=>1,
-		    'enabled'=> true,	// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
-		    'perms'=>'1',			                // Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
+		    'enabled'=> true,
+		    'perms'=>'1',
 		    'target'=>'',
-		    'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
+		    'user'=>2);	
 		$r++;
-                $this->menu[$r]=array(	'fk_menu'=>'menu:toto',		                // Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
-		    'type'=>'',			                // This is a Left menu entry
+		$this->menu[$r]=array(	'fk_menu'=>'menu:etatstock2',
+		    'type'=>'',
+		    '_id'=>'menu:etatstock2ref',
+		    'titre'=>'Etat stock par référence',
+		    'url'=>'/stock2/etatstock.php?type=product',
+		    'langs'=>'',
+		    'position'=>1,
+		    'enabled'=> true,
+		    'perms'=>'1',
+		    'target'=>'',
+		    'user'=>2);	
+		$r++;
+		$this->menu[$r]=array(	'fk_menu'=>'menu:etatstock2',
+		    'type'=>'',
+		    '_id'=>'menu:etatstock2spot',
+		    'titre'=>'Etat stock par emplacement',
+		    'url'=>'/stock2/etatstock.php?type=spot',
+		    'langs'=>'',
+		    'position'=>1,
+		    'enabled'=> true,
+		    'perms'=>'1',
+		    'target'=>'',
+		    'user'=>2);	
+		$r++;
+                $this->menu[$r]=array(	'fk_menu'=>'menu:stock2',
+		    'type'=>'',
 		    '_id'=>'menu:inventairestock2',
 		    'titre'=>'Inventaire',
 		    'url'=>'/stock2/inventaire.php',
-		    'langs'=>'',	                // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+		    'langs'=>'',
 		    'position'=>2,
-		    'enabled'=>true,	// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
-		    'perms'=>'1',			                // Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
+		    'enabled'=>true,
+		    'perms'=>'1',
 		    'target'=>'',
-		    'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
+		    'user'=>2);
 		$r++;
-                $this->menu[$r]=array(	'fk_menu'=>'menu:toto',		                // Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
-		    'type'=>'',			                // This is a Left menu entry
+                $this->menu[$r]=array(	'fk_menu'=>'menu:stock2',
+		    'type'=>'',
 		    '_id'=>'menu:facturationsstock2',
 		    'titre'=>'Facturation',
 		    'url'=>'/stock2/facturation.php',
-		    'langs'=>'',	                // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+		    'langs'=>'',
 		    'position'=>3,
-		    'enabled'=>true,	// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
-		    'perms'=>'1',			                // Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
+		    'enabled'=>true,
+		    'perms'=>'1',
 		    'target'=>'',
-		    'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
+		    'user'=>2);
 		
 		
 	}
