@@ -30,16 +30,27 @@ dol_include_once("/stock2/class/stock2.class.php");
 dol_include_once("/stock2/lib/phptoexcel/Classes/PHPExcel.php");
 
 
-$arraym = array("", "janvier", "fevrier", "mars", "avril", "mai", "juin","juillet","aout","septembre","octobre","novembre","decembre");
+$arraym = array("", "Janvier", "Fevrier", "Mars", "Avril", "Mai", "Juin","Juillet","Août","Septembre","Octobre","Novembre","Decembre");
 $sizem = sizeof($arraym);
 $maxa = 2020;
 $optionM = "";
 $optionA = "";
 for ($i = 1; $i < $sizem; $i++) {
-    $optionM .= '<option value="' . $i . '">' . $arraym[$i] . '</option>';
+    if($_POST['mois']==$i){
+        $optionM .= '<option selected="selected" value="' . $i . '">' . $arraym[$i] . '</option>';
+    }
+    else{
+         $optionM .= '<option  value="' . $i . '">' . $arraym[$i] . '</option>';
+    }
+    
 }
 for ($i = 2012; $i <= $maxa; $i++) {
-    $optionA .= '<option value="' . $i . '">' . $i . '</option>';
+    if($_POST['annee']==$i){
+        $optionA .= '<option selected="selected" value="' . $i . '">' . $i . '</option>';
+    }
+    else{
+        $optionA .= '<option  value="' . $i . '">' . $i . '</option>';
+    }
 }
 
 
@@ -79,8 +90,8 @@ if ($_POST) {
     $mois = $_POST['mois'];
     $annee = $_POST['annee'];
     $object = new Stock2($db);
-    $timestampd = mktime(0, 0, 0, $mois, 1, $annee); //ex : mai 2012 :  1335823200
-    $timestampf = mktime(0, 0, 0, ($mois + 1), 1, $annee); // ex : juin 2012 : 1338501600
+    $timestampd = mktime(0, 0, 0, $mois, 1, $annee); 
+    $timestampf = mktime(0, 0, 0, ($mois + 1), 1, $annee); 
     $viewname = "listByDate";
     $result = $object->getView($viewname, $timestampd, $timestampf);
     $array = $result->rows;
@@ -90,15 +101,15 @@ if ($_POST) {
         $i = 1;
         //$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow('1')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_DATE_YYYYMMDDSLASH);
         foreach ($array AS $aRow) {
-            $timestamp = $aRow->value->datetime;
+            $timestamp = $aRow->value->tms;
             $date = date("d/m/Y", $timestamp);
             $heure = date("H:i:s", $timestamp);
             $objPHPExcel->setActiveSheetIndex(0)
-                    ->setCellValue('A' . $i, $aRow->value->operateur)
+                    ->setCellValue('A' . $i, $aRow->value->UserUpdate)
                     ->setCellValue('B' . $i, $date)
                     ->setCellValue('C' . $i, $heure)
-                    ->setCellValue('D' . $i, $aRow->value->tracking)
-                    ->setCellValue('E' . $i, $aRow->value->codeprestataire . $aRow->value->codemouv);
+                    ->setCellValue('D' . $i, $aRow->value->Tracking)
+                    ->setCellValue('E' . $i, $aRow->value->Collection . $aRow->value->flowId);
             $i++;
         }
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
@@ -111,7 +122,7 @@ if ($_POST) {
             print'<div style="font-size:14px;" class="alert-box success">'.date('H:i:s').' Fichier créé avec success
                      <a href="javascript:void(0)" class="close">×</a>
                   </div>';
-            print "<p style='font-size:20px;'> Fichier Excel2007 Généré pour ".date("F",$timestampd)." ".date("Y",$timestampd)." : <a href='facturation.xlsx'>ICI</a></p>\n";
+            print "<p style='font-size:20px;'> Fichier Excel Généré pour ".$langs->trans(date("F",$timestampd))." ".date("Y",$timestampd)." : <a href='facturation.xlsx'>ICI</a></p>\n";
         
         } catch (Exception $e) {
             print '<div style="font-size:14px;" class="alert-box error">
