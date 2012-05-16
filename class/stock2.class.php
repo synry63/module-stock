@@ -55,7 +55,7 @@ class Stock2 extends CommonObject
                 $obj->tms = $timestamp;
                 $obj->Tracking = $array[$i];
                 $obj->Collection = strtoupper($prestataire);
-                $obj->flowId = $code;
+                $obj->flowId = (int)$code;
                 $col[$i] = $obj;
                 $obj=null;
                 
@@ -63,41 +63,40 @@ class Stock2 extends CommonObject
              $this->couchdb->storeDocs($col);
           }
      }
-     function createByButton($rowsid,$user,$codemouv){
-            $array =  explode(" ", $rowsid);
-            $size = sizeof($array);
-            $timestamp = dol_now();
-            for($i=0;$i<$size;$i++){ 
-                $this->fetch($array[$i]);
-                unset($this->values->_id);
-		unset($this->values->_rev);
-                $this->values->UserCreate = $user->login;
-                $this->values->tms = $timestamp;
-                $this->values->flowId = $codemouv;
-		if($codemouv == 400)
-			unset($this->values->Tracking);
-		if($codemouv == 900)
-			unset($this->values->Spot);
-                $col[$i] = $this->values;
-            }
-            $result = $this->couchdb->storeDocs($col);
-	    foreach ($result as $key => $aRow)
-	    {
-		$col[$key]->_id = $aRow->id;
-	    }
-            return $col;
-     }
-     
-     public function getView($name,$startkey="",$endkey="")
-     {
-        global $conf;
-        if($name=="list")
-            return $this->couchdb->getView(get_class ($this),$name);
-        else if($name=="listByDate")
-           return $this->couchdb->startkey($startkey)->endkey($endkey)->getView(get_class ($this),$name);
-        else 
-            return $this->couchdb->group(true)->group_level(1)->getView(get_class ($this),$name);
-     }
+	
+	function createByButton($rowsid,$user,$codemouv)
+	{
+		$array =  explode(" ", $rowsid);
+		$size = sizeof($array);
+		$timestamp = dol_now();
+		for($i=0;$i<$size;$i++){ 
+			$this->fetch($array[$i]);
+			unset($this->values->_id);
+			unset($this->values->_rev);
+			$this->values->UserCreate = $user->login;
+			$this->values->tms = $timestamp;
+			$this->values->flowId = (int)$codemouv;
+			if($codemouv == 400)
+				unset($this->values->Tracking);
+			if($codemouv == 800) // sortie du stock et ré-entrée
+			{
+				$in = clone $this->values;
+				unset($in->Spot);
+				$in->flowId = 700;
+				$colIn[] = $in;// Add a new enter in stock
+			}
+			$col[$i] = $this->values;
+		}
+		
+		$out = array_merge($col,$colIn);
+			
+		$result = $this->couchdb->storeDocs($out);
+		foreach ($result as $key => $aRow)
+		{
+			$out[$key]->_id = $aRow->id;
+		}
+		return $out;
+	}
 
      public function createView($name){
          

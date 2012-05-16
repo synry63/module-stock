@@ -39,7 +39,7 @@ if($_GET['json']=="edit"){
     
     try {
 		$object->fetch($id);
-	    $object->values->$key = $value;
+		$object->set($key,$value);
 	    $res = $object->update($user);
 	    if( $res >0 )
 	    {
@@ -266,7 +266,7 @@ $obj->aaSorting = array(array(3, "desc"));
                 "url": oConfig.sAjaxUrl,
                 "data": [
                             { "name": "tableData", "value": idrow },
-                            { "name": "codemouv", "value": "900"}
+                            { "name": "codemouv", "value": "800"}
                         ],
                 "success": oConfig.fnAjaxComplete,
                 "dataType": "json",

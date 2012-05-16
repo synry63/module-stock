@@ -47,7 +47,7 @@ $object = new Stock2($db);
      echo json_encode($col);
      exit;
 }*/
-if($_GET['json'])
+if($_GET['json']=="list")
 {
     $output = array(
     "sEcho" => intval($_GET['sEcho']),
@@ -72,19 +72,8 @@ if($_GET['json'])
     $output["iTotalDisplayRecords"]=$iTotal;
     $i=0;
     foreach($result->rows AS $aRow){
-        
-        /*unset($aRow->value->class);
-        unset($aRow->value->_id);
-        unset($aRow->value->_rev);
-        unset($aRow->value->codemouv);
-        unset($aRow->value->codeprestataire);
-        unset($aRow->value->operateur);
-        unset($aRow->value->datetime);
-        unset($aRow->value->tracking);*/
 
         $output["aaData"][]=$aRow->value;
-       // $key =$output["aaData"][$i]->reference==$result2->rows[$i]->key){
-        //    $output["aaData"][$i]->quantite=$result2[$i]->value;
         
         unset($aRow);
         
@@ -94,28 +83,27 @@ if($_GET['json'])
     echo json_encode($output);
     exit;
 }
-llxHeader('', '', '', '', '', '', '');
+llxHeader();
 // init list entrepot option
-$arrayp = array("Dell"=>"dell","Cisco"=>"cisc");
-//$size = sizeof($arrayp);
-foreach ($arrayp as $key => $value){
-    if($value==$_POST['entrepot'])
-        $options .= '<option selected="selected" value="'.$value.'">'.$key.'</option>';
-    else
-        $options .= '<option  value="'.$value.'">'.$key.'</option>';
+try {
+	$result = $object->getView("Collection",1);
+} catch (Exception $e) {
+	dol_print_error('',$e->getMessage());
 }
-// init type affichage option
-$arrayt = array("Par Emplacement"=>"empl","Par Pièce"=>"piece");
-foreach ($arrayt as $key => $value){
-    if($value==$_POST['display'])
-        $optionsDisplay .= '<option selected="selected" value="'.$value.'">'.$key.'</option>';
-    else
-        $optionsDisplay .= '<option  value="'.$value.'">'.$key.'</option>';
+
+$h=0;
+foreach ($result->rows as $aRow)
+{
+	$head[$h][0] = "#";
+	$head[$h][1] = $langs->trans($aRow->key);
+	$head[$h][2] = $aRow->key;
+	$h++;
 }
 
 print'<div class="row">';
-print start_box("Liste des stocks","twelve","16-List-w_-Images.png",false);
+print start_box("Liste des stocks","twelve","16-List-w_-Images.png",false,$head);
 
+$langs->load('stock2@stock2');
 
 $i=0;
 $obj=new stdClass();
@@ -128,12 +116,6 @@ print'<thead>';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "reference";
     $obj->aoColumns[$i]->sDefaultContent = "";
-    /*$obj->aoColumns[$i]->fnRender = '%function(obj) {
-    var str = obj.aData.reference;
-    if(typeof str === $undefined$)
-        str = null;
-        return str;
-    }%'; */   
     $i++;
     
     print'<th class="essential">';
@@ -141,12 +123,6 @@ print'<thead>';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "emplacement";
     $obj->aoColumns[$i]->sDefaultContent = "";
-   /* $obj->aoColumns[$i]->fnRender = '%function(obj) {
-    var str = obj.aData.emplacement;
-    if(typeof str === $undefined$)
-        str = null;
-        return str;
-    }%';   */
     $i++;
     
     print'<th class="essential">';
@@ -154,12 +130,6 @@ print'<thead>';
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "serie";
     $obj->aoColumns[$i]->sDefaultContent = "";
-   /* $obj->aoColumns[$i]->fnRender = '%function(obj) {
-    var str = obj.aData.serie;
-    if(typeof str === $undefined$)
-        str = null;
-        return str;
-    }%';*/    
     $i++;
     
    print'<th class="essential">';
@@ -213,52 +183,40 @@ print'</tr>';
 print'</tfoot>';
 }
 else{   
-print'<thead>';
-    print'<th>';
-    print 'Emplacement';
-    print'</th>';
-    $obj->aoColumns[$i]->mDataProp = "emplacement";
+	print'<thead>';
+	print'<tr>';
+	print'<th>';
+	print'</th>';
+	$obj->aoColumns[$i]->mDataProp = "_id";
+	$obj->aoColumns[$i]->bVisible = false;
+	$i++;
+	print'<th>';
+	print $langs->trans("Spot");
+	print'</th>';
+	$obj->aoColumns[$i]->mDataProp = "Spot";
     $obj->aoColumns[$i]->sDefaultContent = "";
-    /*$obj->aoColumns[$i]->fnRender = '%function(obj) {
-    var str = obj.aData.emplacement;
-    if(typeof str === $undefined$)
-        str = null;
-        return str;
-    }%';*/    
     $i++;
     print'<th class="essential">';
-    print 'Référence pièce';
+    print $langs->trans("Product");
     print'</th>';
-    $obj->aoColumns[$i]->mDataProp = "reference";
+    $obj->aoColumns[$i]->mDataProp = "Product";
     $obj->aoColumns[$i]->sDefaultContent = "";
-    /*$obj->aoColumns[$i]->fnRender = '%function(obj) {
-    var str = obj.aData.reference;
-    if(typeof str === $undefined$)
-        str = null;
-        return str;
-    }%';*/  
     $i++;
     
     print'<th class="essential">';
-    print 'Numéro de série';
+    print $langs->trans("SN");
     print'</th>';
-    $obj->aoColumns[$i]->mDataProp = "serie";
+    $obj->aoColumns[$i]->mDataProp = "SN";
     $obj->aoColumns[$i]->sDefaultContent = "";
-    /*$obj->aoColumns[$i]->fnRender = '%function(obj) {
-    var str = obj.aData.serie;
-    if(typeof str === $undefined$)
-        str = null;
-        return str;
-    }%';*/   
     $i++;
     
    print'<th class="essential">';
-    print 'Quantité';
+    print $langs->trans("Nb");
     print'</th>';
-    $obj->aoColumns[$i]->mDataProp = "quantite";
+    $obj->aoColumns[$i]->mDataProp = "total";
     $obj->aoColumns[$i]->sDefaultContent = "";
     $obj->aoColumns[$i]->sClass = "center";
-    
+print'</tr>';
 print'</thead>';
 
 $obj->fnDrawCallback = "%function(oSettings){
@@ -289,15 +247,16 @@ $obj->fnDrawCallback = "%function(oSettings){
                 }
     }%";
     
-$i=1;
+$i=0;
 print'<tfoot>';
 print'<tr>';
-print'<td></td>';
-print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Réf pièce") . '"/></td>';
+print'<th></th>';
+print'<th></th>';
+print'<th id='.$i.'><input type="text" placeholder="' . $langs->trans("Search Réf pièce") . '"/></th>';
 $i++;
-print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Num série") . '"/></td>';
+print'<th id='.$i.'><input type="text" placeholder="' . $langs->trans("Search Num série") . '"/></th>';
 $i++;
-print'<td id='.$i.'><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Quantité") .  '"/></td>';
+print'<th id='.$i.'><input type="text" placeholder="' . $langs->trans("Search Quantité") .  '"/></th>';
 print'</tr>';
 print'</tfoot>';
 
@@ -312,8 +271,9 @@ $obj->aaSorting=array(array(1,'asc'));
 
 print'<tbody>';
 print'</tbody>';
-print $object->_datatables($obj,"etatstock",true,true);
 print'</table>';
+
+print $object->datatablesCreate($obj,"etatstock",true);
 
 print end_box();
 print '</div>';
