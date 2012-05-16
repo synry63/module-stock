@@ -37,50 +37,23 @@ if($_GET['json']=="edit"){
     $id = $_POST['id'];
     $value = $_POST['value'];
     
-    if($key != "codemouv"){
-        try {
-	    $object->fetch($id);
-	    //$res = $object->set($key,$value);
+    try {
+		$object->fetch($id);
 	    $object->values->$key = $value;
 	    $res = $object->update($user);
 	    if( $res >0 )
 	    {
-		print $value;
+			print $value;
 	    }
 	    else
 	    {
-		print $res."</br>";
-		print_r($object->errors);
-	    }
-            exit;
-        } catch (Exception $exc) {
-            print $exc->getTraceAsString();
-            exit;
-        }
+			print $res."</br>";
+			print_r($object->errors);
+	    }        
+    } catch (Exception $exc) {
+		print $exc->getTraceAsString();
     }
-    else{
-        $code = substr($value, 4);
-        $prestataire = strtoupper(substr($value,0,4));
-        try {
-	    $object->fetch($id);
-	    $object->values->codeprestataire = $prestataire;
-	    $object->values->codemouv = $code;
-	    $res = $object->update($user);
-	    if( $res >0 )
-	    {
-		print $prestataire.$code;
-	    }
-	    else
-	    {
-		print $res."</br>";
-		print_r($object->errors);
-	    }
-            exit;
-        } catch (Exception $exc) {
-           print $exc->getTraceAsString();
-           exit;
-        }
-    }
+	exit;
 }
 
 
@@ -137,7 +110,9 @@ $arrayjs[0] = "/custom/stock2/lib/datatables/js/indicateurTracking.js";
 llxHeader("","","","","","",$arrayjs);
 
 print'<div class="row">';
-print start_box("Saisie des mouvements","twelve","16-Download.png",true,true);
+print start_box("Saisie des mouvements","twelve","16-Download.png",true);
+
+$langs->load('stock2@stock2');
 
 /*tableau de saisie rapide */
 
@@ -163,7 +138,7 @@ print end_box();
 print'</div>';
 
 print'<div class="row">';
-print start_box("Liste des mouvements","twelve","16-List-w_-Images.png",false,false);
+print start_box("Liste des mouvements","twelve","16-List-w_-Images.png",false);
 
 $i=0;
 $obj=new stdClass();
@@ -178,68 +153,7 @@ print'<tr>';
     $obj->aoColumns[$i]->mDataProp = "_id";
     $obj->aoColumns[$i]->bVisible = false;
     $i++;
-    print'<th class="essential">';
-    print 'Nom operateur';
-    print'</th>';
-    $obj->aoColumns[$i]->mDataProp = "UserCreate";
-    $i++;
-    print'<th class="essential">';
-    print 'Date et heure';
-    print'</th>';
-    $obj->aoColumns[$i]->mDataProp = "tms";
-    $obj->aoColumns[$i]->sType="date";
-    $obj->aoColumns[$i]->fnRender = 'function(obj) {
-    if(obj.aData.tms)
-    {
-        var date = new Date(obj.aData.tms*1000);
-        return date.toLocaleDateString()+" "+date.toLocaleTimeString();
-    }
-    else
-        return null;
-    }';
-    $i++;
-    print'<th class="essential">';
-    print 'Numero de tracking';
-    print'</th>';
-    $obj->aoColumns[$i]->mDataProp = "tracking";
-    $obj->aoColumns[$i]->sClass = "edit";
-    $obj->aoColumns[$i]->sDefaultContent = "";
-    $i++;
-    print'<th class="essential">';
-    print 'Mouvement colis';
-    print'</th>';
-    $obj->aoColumns[$i]->mDataProp = "codemouv";
-    $obj->aoColumns[$i]->sClass = "edit";
-    $obj->aoColumns[$i]->sDefaultContent = "";
-    $obj->aoColumns[$i]->fnRender = 'function(obj) {
-    var str = obj.aData.codeprestataire+obj.aData.codemouv;
-    if(typeof str === "undefined")
-        str = "";
-        return str;
-    }';
-    $i++;
-    print'<th class="essential">';
-    print 'Référence pièce';
-    print'</th>';
-    $obj->aoColumns[$i]->mDataProp = "reference";
-    $obj->aoColumns[$i]->sClass = "edit";
-    $obj->aoColumns[$i]->sDefaultContent = "";
-    $i++;
-    print'<th class="essential">';
-    print 'Numéro de série';
-    print'</th>';
-    $obj->aoColumns[$i]->mDataProp = "serie";
-    $obj->aoColumns[$i]->sClass = "edit";
-    $obj->aoColumns[$i]->sDefaultContent = "";
-    $i++;
-    print'<th class="essential">';
-    print 'Emplacement';
-    print'</th>';
-    $obj->aoColumns[$i]->mDataProp = "emplacement";
-    $obj->aoColumns[$i]->sClass = "edit";
-    $obj->aoColumns[$i]->sDefaultContent = "";
-    $i++;
-    print '<th class="chb_col"><input type="checkbox" class="chSel_all" /></th>';
+	print '<th class="chb_col"><input type="checkbox" class="chSel_all" /></th>';
     $obj->aoColumns[$i]->mDataProp = null;
     $obj->aoColumns[$i]->bSortable = false;
     $obj->aoColumns[$i]->sDefaultContent = false;
@@ -248,7 +162,63 @@ print'<tr>';
         var str ="<input id="+obj.aData._id+" type=\"checkbox\" name=\"row_sel\"/>";
         return str;
     }';
-    /* init ajax button */
+	$i++;
+    print'<th class="essential">';
+	print $langs->trans("UserCreate");
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "UserCreate";
+    $i++;
+    print'<th class="essential">';
+    print $langs->trans("Date");
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "tms";
+    $obj->aoColumns[$i]->sType="date";
+    $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("tms", "datetime");
+    $i++;
+	foreach ($object->fk_extrafields->longList as $aRow)
+	{
+		print'<th class="essential">';
+		print $langs->trans($aRow);
+		print'</th>';
+		$obj->aoColumns[$i] = $object->fk_extrafields->fields->$aRow->aoColumns;
+		if(isset($object->fk_extrafields->$aRow->default))
+			$obj->aoColumns[$i]->sDefaultContent = $object->fk_extrafields->$aRow->default;
+		else
+			$obj->aoColumns[$i]->sDefaultContent = "";
+		$obj->aoColumns[$i]->mDataProp = $aRow;
+		$i++;
+	}
+              
+print'</tr>';
+print'</thead>';
+$i=0;
+print'<tfoot>';
+print'<tr>';
+print'<th id='.$i.'></th>';
+$i++;
+print'<th id='.$i.'></th>';
+$i++;
+print'<th id='.$i.'><input type="text" placeholder="' . $langs->trans("Search User") . '" /></th>';
+$i++;
+print'<th id='.$i.'><input type="text" placeholder="' . $langs->trans("Search Date") . '" /></th>';
+$i++;
+foreach ($object->fk_extrafields->longList as $aRow)
+{
+	if($object->fk_extrafields->fields->$aRow->aoColumns->bSearchable = true)
+		print'<th id="'.$i.'"><input type="text" placeholder="' . $langs->trans("Search ".$aRow) . '" /></th>';
+	else
+		print'<th id="'.$i.'"></th>';
+	$i++;
+}
+print'</tr>';
+print'</tfoot>';
+print'<tbody>';
+print'</tbody>';
+
+print'</table>';
+$obj->aaSorting = array(array(3, "desc"));
+
+/* init ajax button */
     $obj->oTableTools->aButtons = array(array("sExtends"=>"ajax","sAjaxUrl"=> $_SERVER['PHP_SELF'],
     "fnClick"=>'function ( nButton, oConfig, oFlash ){
                 var idrow="";
@@ -310,39 +280,8 @@ print'<tr>';
                     }',
     "sButtonText"=>"Mouvement Interne"
      ));
-              
-print'</tr>';
-print'</thead>';
-$i=0;
-print'<tfoot>';
-print'<tr>';
-print'<th id='.$i.'></th>';
-$i++;
-print'<th id='.$i.'><input type="text" placeholder="' . $langs->trans("Search opérateur") . '" /></th>';
-$i++;
-print'<th id='.$i.'><input type="text" placeholder="' . $langs->trans("Search date et heure") . '" /></th>';
-$i++;
-print'<th id='.$i.'><input type="text" placeholder="' . $langs->trans("Search Num tracking") . '" /></th>';
-$i++;
-print'<th id='.$i.'><input type="text" placeholder="' . $langs->trans("Search Mouv colis") . '" /></th>';
-$i++;
-print'<th id='.$i.'><input type="text" placeholder="' . $langs->trans("Search Réf pièce") . '" /></th>';
-$i++;
-print'<th id='.$i.'><input type="text" placeholder="' . $langs->trans("Search Num série") . '" /></th>';
-$i++;
-print'<th id='.$i.'><input type="text" placeholder="' . $langs->trans("Search Emplacement") . '" /></th>';
-$i++;
-print'<th id='.$i.'></th>';
-$i++;
-print'</tr>';
-print'</tfoot>';
-print'<tbody>';
-print'</tbody>';
 
-print'</table>';
-$obj->aaSorting = array(array(2, "desc"));
-
-$object->_datatables($obj,"mouvement",true,true);
+$object->datatablesCreate($obj,"mouvement",true,true);
 
 
 print end_box();

@@ -28,7 +28,6 @@ require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 
 class Stock2 extends CommonObject
 {
-    public $element;
     
     /*Constructor */
     function __construct($db){
@@ -54,9 +53,9 @@ class Stock2 extends CommonObject
                 $obj->class = get_class($this);
 		$obj->UserCreate = $user->login;
                 $obj->tms = $timestamp;
-                $obj->tracking = $array[$i];
-                $obj->codeprestataire = strtoupper($prestataire);
-                $obj->codemouv = $code;
+                $obj->Tracking = $array[$i];
+                $obj->Collection = strtoupper($prestataire);
+                $obj->flowId = $code;
                 $col[$i] = $obj;
                 $obj=null;
                 
@@ -74,9 +73,9 @@ class Stock2 extends CommonObject
 		unset($this->values->_rev);
                 $this->values->UserCreate = $user->login;
                 $this->values->tms = $timestamp;
-                $this->values->codemouv = $codemouv;
+                $this->values->flowId = $codemouv;
 		if($codemouv == 400)
-		    unset($this->values->tracking);
+		    unset($this->values->Tracking);
                 $col[$i] = $this->values;
             }
             $result = $this->couchdb->storeDocs($col);
