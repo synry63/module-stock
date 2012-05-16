@@ -103,11 +103,8 @@ if(isset($_POST['tableData'])){
     echo json_encode($col);
     exit;
 }
-/* active datatable js */
-$arrayjs = array();
-$arrayjs[0] = "/custom/stock2/lib/datatables/js/indicateurTracking.js";
 
-llxHeader("","","","","","",$arrayjs);
+llxHeader();
 
 print'<div class="row">';
 print start_box("Saisie des mouvements","twelve","16-Download.png",true);
@@ -292,6 +289,24 @@ $object->datatablesCreate($obj,"mouvement",true,true);
 
 print end_box();
 print '</div>';
+
+?>
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function() {
+   var reg = new RegExp("\n","g");
+   $('textarea').keyup(function(event) {
+        var str = $(this).val();
+        var nb = 0;
+        var array = str.match(reg);
+        if(array!=null)
+             nb = array.length;
+        
+        $('span.cpt').text(nb);
+   
+    });
+});
+</script>
+<?php
 
 llxFooter();
 
