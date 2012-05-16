@@ -97,40 +97,5 @@ class Stock2 extends CommonObject
 		}
 		return $out;
 	}
-
-     public function createView($name){
-         
-	 $name = strtoupper($name);
-	 
-         $doc = $this->couchdb->getDoc("_design/".get_class());
-         $doc->views->$name->map='function(doc){
-            if(doc.class=="'.get_class($this).'" && doc.reference && doc.codeprestataire=="'.$name.'")		
-                emit(doc.reference, {"reference":doc.reference,"serie":doc.serie,"emplacement":doc.emplacement,"codemouv":doc.codemouv});
-             
-            }';
-         $doc->views->$name->reduce='function(key, values, rereduce){
-                    var cpt =0;
-                    for(var i= 0; i < values.length; i++){
-                        if(values[i].codemouv=="300" || values[i].codemouv=="900") cpt++;
-                        if(values[i].codemouv=="400") cpt--;
-                    }
-                    var out={"reference":values[0].reference,"serie":values[0].serie,"emplacement":values[0].emplacement,"quantite":cpt}		
-                    return out;
-            }';
-        //$doc->set($fi$field = $obj;eld,$value);
-         //$doc->record();
-        try {
-        //$test ='';    
-         $result = $this->couchdb->storeDoc($doc);
-        //header('Content-type: application/json');    
-        //print_r (json_encode($obj[0]));
-  
-    } catch (Exception $e) {
-        echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-        exit();
-    }
-
-
-     }
 }
 ?>
