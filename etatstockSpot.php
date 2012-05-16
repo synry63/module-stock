@@ -37,15 +37,15 @@ if($_GET['json']=="list")
     "iTotalDisplayRecords" => 0,
     "aaData" => array()
     );
-    $viewname="DELL";
-    if(isset($_GET['entrepot'])) $viewname = $_GET['entrepot'];
+    
+    $viewname = $_GET['Collection'];
 	
-	$keysta[0]="DELL";
-        $keyend[0]="DELL";
+	$keystart[0]=$viewname;
+        $keyend[0]=$viewname;
         $keyend[1]= new stdClass();
 	
     try {
-       $result = $object->getView("CountProduct",3,'',$keysta,$keyend);
+       $result = $object->getView("CountProduct",3,'',$keystart,$keyend);
     } catch (Exception $exc) {
 	print $exc->getMessage();
     }
@@ -94,43 +94,62 @@ print start_box("Liste des stocks par emplacement","twelve","16-List-w_-Images.p
 
 $langs->load('stock2@stock2');
 
-$i=0;
-$obj=new stdClass();
-/*table views */
-print '<table class="display dt_act" id="etatstock">';
 
-print'<thead>';
-print'<tr>';
+foreach ($result->rows as $aRow)
+{
+	print '<article class="tab_pane">';
+	/*table views */
+	table($object, $aRow->key);
+	print '</article>';
+}
 
-print'<th>';
-print $langs->trans("Spot");
-print'</th>';
-$obj->aoColumns[$i]->mDataProp = "Spot";
-$obj->aoColumns[$i]->sDefaultContent = "";
-$obj->aoColumns[$i]->bVisible = true;
 
-$i++;
-print'<th class="essential">';
-print $langs->trans("Product");
-print'</th>';
-$obj->aoColumns[$i]->mDataProp = "Product";
-$obj->aoColumns[$i]->sDefaultContent = "";
-$i++;
+print end_box();
+print '</div>';
+
+llxFooter();
+
+function table($object, $key)
+{
+	global $langs;
+	
+	$i=0;
+	$obj=new stdClass();
+
+	print '<table class="display dt_act" id="'.$key.'">';
+
+	print'<thead>';
+	print'<tr>';
+
+	print'<th>';
+	print $langs->trans("Spot");
+	print'</th>';
+	$obj->aoColumns[$i]->mDataProp = "Spot";
+	$obj->aoColumns[$i]->sDefaultContent = "";
+	$obj->aoColumns[$i]->bVisible = true;
+
+	$i++;
+	print'<th class="essential">';
+	print $langs->trans("Product");
+	print'</th>';
+	$obj->aoColumns[$i]->mDataProp = "Product";
+	$obj->aoColumns[$i]->sDefaultContent = "";
+	$i++;
    
-print'<th class="essential">';
-print $langs->trans("Total");
-print'</th>';
-$obj->aoColumns[$i]->mDataProp = "total";
-$obj->aoColumns[$i]->sDefaultContent = "";
-$obj->aoColumns[$i]->sClass = "center";
-print'</tr>';
-print'</thead>';
-$obj->fnDrawCallback = "function(oSettings){
+	print'<th class="essential">';
+	print $langs->trans("Total");
+	print'</th>';
+	$obj->aoColumns[$i]->mDataProp = "total";
+	$obj->aoColumns[$i]->sDefaultContent = "";
+	$obj->aoColumns[$i]->sClass = "center";
+	print'</tr>';
+	print'</thead>';
+	$obj->fnDrawCallback = "function(oSettings){
                 if ( oSettings.aiDisplay.length == 0 )
                 {
                     return;
                 }
-                var nTrs = jQuery('#etatstock tbody tr');
+                var nTrs = jQuery('#".$key." tbody tr');
                 var iColspan = nTrs[0].getElementsByTagName('td').length;
                 var sLastGroup = '';
                 for ( var i=0 ; i<nTrs.length ; i++ )
@@ -151,23 +170,20 @@ $obj->fnDrawCallback = "function(oSettings){
                     
                     
                 }
-    }";
+	}";
     
-$i=0;
-print'<tfoot>';
-print'</tfoot>';
+	$i=0;
+	print'<tfoot>';
+	print'</tfoot>';
 
-$obj->aaSorting=array(array(0,'asc'));
+	$obj->aaSorting=array(array(0,'asc'));
+	$obj->sAjaxSource= $_SERVER['PHP_SELF']."?json=list&Collection=".$key;
 
-print'<tbody>';
-print'</tbody>';
-print'</table>';
+	print'<tbody>';
+	print'</tbody>';
+	print'</table>';
 
-print $object->datatablesCreate($obj,"etatstock",true);
-
-print end_box();
-print '</div>';
-
-llxFooter();
+	print $object->datatablesCreate($obj,$key,true);
+}
 
 ?>
