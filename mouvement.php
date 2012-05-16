@@ -115,24 +115,30 @@ print start_box("Saisie des mouvements","twelve","16-Download.png",true);
 $langs->load('stock2@stock2');
 
 /*tableau de saisie rapide */
-
-print'<form class="nice" action="'.$_SERVER['PHP_SELF'].'" method="post">';
-print '<div style="text-align:center";>';
-print'<h5 style="display:inline;" class="sepH_b"> Colis Scannés :</h5> <span class="cpt">0</span>';
-print '</div>';
-print '<div class="formRow elVal">';
-    print '<label for="tracking">Numéro de Tracking</label>';
-    print'<textarea id="tracking" name="tracking" placeholder="Numéro de Tracking" class="auto_expand expand" rows="2" cols="1">';
-    print'</textarea>';
-print '</div>';
-print '<div class="formRow elVal">';
-    print '<label for="codemouv">Code Mouvement</label>';
-    print '<input type="text" placeholder="Code Mouvement" class="input-text small" name="mouv" id="codemouv">';
-print'</div>';
-print'<div class="formRow">';
-    print'<button class="button small nice blue" type="submit">Ajouter</button>';
-print'</div>';
-print'</form>';
+?>
+<form class="nice" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+	<div class="formRow elVal">
+		<div class="row">
+			<div class="six columns">
+				<label for="tracking">Numéro de Tracking</label>
+				<textarea id="tracking" name="tracking" placeholder="Numéro de Tracking" class="auto_expand expand" rows="8" cols="1"></textarea>
+				<div>
+					<span class="cpt lbl info_bg">0</span> Colis Scannés
+				</div>
+			</div>
+			<div class="six columns">
+				<div class="row">
+					<label for="codemouv">Code Mouvement</label>
+					<input type="text" placeholder="Code Mouvement" class="input-text small" name="mouv" id="codemouv">
+				</div>
+				<div class="formRow">
+					<button class="button small nice blue" type="submit">Ajouter</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+<?php
 
 print end_box();
 print'</div>';

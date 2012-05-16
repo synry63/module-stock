@@ -75,7 +75,9 @@ class Stock2 extends CommonObject
                 $this->values->tms = $timestamp;
                 $this->values->flowId = $codemouv;
 		if($codemouv == 400)
-		    unset($this->values->Tracking);
+			unset($this->values->Tracking);
+		if($codemouv == 900)
+			unset($this->values->Spot);
                 $col[$i] = $this->values;
             }
             $result = $this->couchdb->storeDocs($col);
