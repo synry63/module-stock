@@ -26,9 +26,9 @@
 $res=@include("../../main.inc.php");
 if (! $res) $res=@include("../main.inc.php");
 
-dol_include_once("/stock2/class/stock2.class.php");
+dol_include_once("/stockflow/class/stockflow.class.php");
 
-$object = new Stock2($db);
+$object = new StockFlow($db);
 
 
 /*edit cell value */
@@ -38,10 +38,9 @@ if($_GET['json']=="edit"){
     $value = $_POST['value'];
     
     try {
-		$object->fetch($id);
-		$object->set($key,$value);
-	    $res = $object->update($user);
-	    if( $res >0 )
+		$object->id = $id;
+		$res = $object->set($key, $value);
+	    if( $res == $value )
 	    {
 			print $value;
 	    }
@@ -109,7 +108,7 @@ llxHeader();
 print'<div class="row">';
 print start_box("Saisie des mouvements","twelve","16-Download.png",true);
 
-$langs->load('stock2@stock2');
+$langs->load('stock2@stockflow');
 
 /*tableau de saisie rapide */
 ?>

@@ -25,9 +25,9 @@
  */
 $res=@include("../../main.inc.php");									// For "custom" directory
 if (! $res) $res=@include("../main.inc.php");
-dol_include_once("/stock2/class/stock2.class.php");
+dol_include_once("/stockflow/class/stockflow.class.php");
 
-$object = new Stock2($db);
+$object = new StockFlow($db);
 
 if($_GET['json']=="list")
 {
@@ -92,7 +92,7 @@ foreach ($result->rows as $aRow)
 print'<div class="row">';
 print start_box("Liste des stocks par référence produit","twelve","16-List-w_-Images.png",false,$head);
 
-$langs->load('stock2@stock2');
+$langs->load('stock2@stockflow');
 
 
 foreach ($result->rows as $aRow)

@@ -26,7 +26,7 @@
 require_once(DOL_DOCUMENT_ROOT ."/core/class/commonobject.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 
-class Stock2 extends CommonObject
+class StockFlow extends CommonObject
 {
     
     /*Constructor */
@@ -69,6 +69,7 @@ class Stock2 extends CommonObject
 		$array =  explode(" ", $rowsid);
 		$size = sizeof($array);
 		$timestamp = dol_now();
+		$colIn = array();
 		for($i=0;$i<$size;$i++){ 
 			$this->fetch($array[$i]);
 			unset($this->values->_id);

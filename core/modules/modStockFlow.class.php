@@ -31,49 +31,53 @@ include_once(DOL_DOCUMENT_ROOT ."/core/modules/DolibarrModules.class.php");
 /**
  *  Description and activation class for module MyModule
  */
-class modStock2 extends DolibarrModules
+class modStockFlow extends DolibarrModules
 {
 	/**
 	 *   Constructor. Define names, constants, directories, boxes, permissions
 	 *
 	 *   @param      DoliDB		$db      Database handler
 	 */
-	function modStock2($db)
+	function modStockFlow($db)
 	{
         global $langs,$conf;
+		
+		
+		parent::__construct();
 
         $this->db = $db;
 
 		// Id for module (must be unique).
 		// Use here a free id (See in Home -> System information -> Dolibarr for list of used modules id).
 		$this->numero = 470;
-		$this->rights_class = 'stock2';
+		//$this->rights_class = 'stock2';
 		$this->family = "other";
 		$this->name = preg_replace('/^mod/i','',get_class($this));
-		$this->description = "Gestion de stock avec code à barre";
+		$this->description = "Gestion des mouvements de stock avec code à barre";
 		$this->version = '1.0';
 		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
 		// Where to store the module in setup page (0=common,1=interface,2=others,3=very specific)
 		$this->special = 0;
-		$this->picto='generic';
+		$this->picto='sending';
+		$this->moddir="StockFlow";
 
-		$this->module_parts = array();
+		//$this->module_parts = array();
 
-		$this->dirs = array();
+		$this->dirs = array("/stockflow/temp");
 
 		// Config pages. Put here list of php page, stored into mymodule/admin directory, to use to setup module.
-		$this->config_page_url = array("mysetuppage.php@mymodule");
+		//$this->config_page_url = array("mysetuppage.php@mymodule");
 
 		// Dependencies
 		$this->depends = array();		// List of modules id that must be enabled if this module is enabled
 		$this->requiredby = array();	// List of modules id to disable if this one is disabled
 		$this->phpmin = array(5,3);					// Minimum version of PHP required by module
 		$this->need_dolibarr_version = array(3,2);	// Minimum version of Dolibarr required by module
-		$this->langfiles = array("stock2@stock2");
+		$this->langfiles = array("stock2@stockflow");
 
 		$this->const = array();
 
-		$this->tabs = array();
+		//$this->tabs = array();
 
 		// Dictionnaries
 		//if (! isset($conf->stock2->enabled)) $conf->stock2->enabled=0;
@@ -96,85 +100,85 @@ class modStock2 extends DolibarrModules
 		//
 		// Example to declare a new Top Menu entry and its Left menu entry:
 		 $this->menu[$r]=array(	'fk_menu'=>0,
-		     '_id'=>'menu:stock2',
+		     '_id'=>'menu:stockflow',
 		    'type'=>'top',
 		    'titre'=>'Gestion Stock',
-		    'url'=>'/stock2/mouvement.php',
+		    'url'=>'/stockflow/mouvement.php',
 		    'langs'=>'',
 		    'position'=>50,
-		    'enabled'=>true,
+		    'enabled'=>'$conf->stockflow->enabled',
 		    'perms'=>'1',
 		    'target'=>'',
 		    'user'=>2);
 		 $r++;
-		 $this->menu[$r]=array(	'fk_menu'=>'menu:stock2',
+		 $this->menu[$r]=array(	'fk_menu'=>'menu:stockflow',
 		    'type'=>'',
-		    '_id'=>'menu:mouvementstock2',
+		    '_id'=>'menu:mouvementstockflow',
 		    'titre'=>'Mouvement',
-		    'url'=>'/stock2/mouvement.php',
+		    'url'=>'/stockflow/mouvement.php',
 		    'langs'=>'',
 		    'position'=>0,
-		    'enabled'=> true,
+		    'enabled'=> '$conf->stockflow->enabled',
 		    'perms'=>'1',
 		    'target'=>'',
 		    'user'=>2);
 		$r++;
-                $this->menu[$r]=array(	'fk_menu'=>'menu:stock2',
+                $this->menu[$r]=array(	'fk_menu'=>'menu:stockflow',
 		    'type'=>'',
-		    '_id'=>'menu:etatstock2',
+		    '_id'=>'menu:etatstockflow',
 		    'titre'=>'Etat stock',
-		    'url'=>'/stock2/etatstockProd.php',
+		    'url'=>'/stockflow/etatstockProd.php',
 		    'langs'=>'',
 		    'position'=>1,
-		    'enabled'=> true,
+		    'enabled'=> '$conf->stockflow->enabled',
 		    'perms'=>'1',
 		    'target'=>'',
 		    'user'=>2);	
 		$r++;
-		$this->menu[$r]=array(	'fk_menu'=>'menu:etatstock2',
+		$this->menu[$r]=array(	'fk_menu'=>'menu:etatstockflow',
 		    'type'=>'',
-		    '_id'=>'menu:etatstock2ref',
+		    '_id'=>'menu:etatstockflowref',
 		    'titre'=>'Etat stock par référence',
-		    'url'=>'/stock2/etatstockProd.php',
+		    'url'=>'/stockflow/etatstockProd.php',
 		    'langs'=>'',
 		    'position'=>1,
-		    'enabled'=> true,
+		    'enabled'=> '$conf->stockflow->enabled',
 		    'perms'=>'1',
 		    'target'=>'',
 		    'user'=>2);	
 		$r++;
-		$this->menu[$r]=array(	'fk_menu'=>'menu:etatstock2',
+		$this->menu[$r]=array(	'fk_menu'=>'menu:etatstockflow',
 		    'type'=>'',
-		    '_id'=>'menu:etatstock2spot',
+		    '_id'=>'menu:etatstockflowspot',
 		    'titre'=>'Etat stock par emplacement',
-		    'url'=>'/stock2/etatstockSpot.php',
+		    'url'=>'/stockflow/etatstockSpot.php',
 		    'langs'=>'',
 		    'position'=>1,
-		    'enabled'=> true,
+		    'enabled'=>'$conf->stockflow->enabled',
 		    'perms'=>'1',
 		    'target'=>'',
 		    'user'=>2);	
 		$r++;
-                $this->menu[$r]=array(	'fk_menu'=>'menu:stock2',
+                $this->menu[$r]=array(	'fk_menu'=>'menu:stockflow',
 		    'type'=>'',
-		    '_id'=>'menu:inventairestock2',
+		    '_id'=>'menu:inventairestockflow',
 		    'titre'=>'Inventaire',
-		    'url'=>'/stock2/inventaire.php',
+		    'url'=>'/stockflow/inventaire.php',
 		    'langs'=>'',
 		    'position'=>2,
-		    'enabled'=>true,
+		    'enabled'=>'$conf->stockflow->enabled',
 		    'perms'=>'1',
 		    'target'=>'',
 		    'user'=>2);
 		$r++;
-                $this->menu[$r]=array(	'fk_menu'=>'menu:stock2',
+                $this->menu[$r]=array(	'fk_menu'=>'menu:stockflow',
 		    'type'=>'',
-		    '_id'=>'menu:facturationsstock2',
+		    '_id'=>'menu:facturationsstockflow',
 		    'titre'=>'Facturation',
-		    'url'=>'/stock2/facturation.php',
+		    'url'=>'/stockflow/facturation.php',
 		    'langs'=>'',
 		    'position'=>3,
-		    'enabled'=>true,
+		    'enabled'=>'$conf->stockflow->enabled',
 		    'perms'=>'1',
 		    'target'=>'',
 		    'user'=>2);
@@ -194,7 +198,7 @@ class modStock2 extends DolibarrModules
 	{
 		$sql = array();
 
-		$result=$this->load_tables();
+		//$result=$this->create_view();
 
 		return $this->_init($sql, $options);
 	}
@@ -215,18 +219,58 @@ class modStock2 extends DolibarrModules
 	}
 
 
-	/**
-	 *		Create tables, keys and data required by module
-	 * 		Files llx_table1.sql, llx_table1.key.sql llx_data.sql with create table, create keys
-	 * 		and create data commands must be stored in directory /mymodule/sql/
-	 *		This function is called by this->init
-	 *
-	 * 		@return		int		<=0 if KO, >0 if OK
-	 */
-	function load_tables()
-	{
-		return $this->_load_tables('/mymodule/sql/');
-	}
+	function create_view()
+    {
+        
+		$json= '{
+   "_id": "_design/StockFlow",
+   "language": "javascript",
+   "views": {
+       "list": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"StockFlow\")\t\n  emit(doc._id, doc);\n}"
+       },
+       "Collection": {
+           "map": "function(doc) {\n  if(doc.class==\"StockFlow\")\t\t\n  \temit(doc.Collection, doc);\n}",
+           "reduce": "function(keys, values) {\n  return true;\n}"
+       },
+       "CountProduct": {
+           "map": "function(doc){\n\tif(doc.class==\"StockFlow\")\n\t{\n\t\tif(doc.flowId == 300 || doc.flowId == 700)\n        \t\temit([doc.Collection,doc.Product,doc.Spot], 1);\n\t\tif(doc.flowId == 400 || doc.flowId == 800)\n        \t\temit([doc.Collection,doc.Product,doc.Spot], -1);\n\t}\n}",
+           "reduce": "function(keys, values) {\n  return sum(values)\n}"
+       },
+       "target_id": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"StockFlow\")\n  \temit(doc._id, {_id:doc._id, _rev:doc._rev});\n}"
+       },
+       "listByDate": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"StockFlow\"){\t\t\t\n  \temit(doc.tms, doc);\n   }\t\n}"
+       },
+       "CountSpot": {
+           "map": "function(doc){\n\tif(doc.class==\"StockFlow\")\n\t{\n\t\tif(doc.flowId == 300 || doc.flowId == 700)\n        \t\temit([doc.Collection,doc.Spot,doc.Product], 1);\n\t\tif(doc.flowId == 400 || doc.flowId == 800)\n        \t\temit([doc.Collection,doc.Spot,doc.Product], -1);\n\t}\n}",
+           "reduce": "function(keys, values) {\n  return sum(values)\n}"
+       }
+   },
+   "updates": {
+       "in-place": "function (doc, req) {\n var field = req.query.field;\n var value = req.query.value;\n doc[field] = value;\n  return [doc, value];\n }"
+   }
+}';
+		
+		$obj = json_decode($json);
+		try {
+            $result = $this->couchdb->getDoc($obj->_id);
+        } catch (Exception $e) {}
+		
+		if(!empty($result))
+		{
+			$obj->_rev = $result->_rev;
+		}
+
+        try {
+            $this->couchdb->storeDoc($obj);
+        } catch (Exception $e) {
+            echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+            exit(1);
+        }
+		return 1;
+    }
 }
 
 ?>
