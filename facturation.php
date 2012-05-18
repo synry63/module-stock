@@ -96,6 +96,7 @@ if ($_POST) {
 	
     $array = $result->rows;
     if (sizeof($array) != 0) {
+        
         $objPHPExcel = new PHPExcel();
         // Add some data
         $i = 1;
@@ -119,9 +120,9 @@ if ($_POST) {
         $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
         try {
             $url =str_replace('htdocs','documents',DOL_MAIN_URL_ROOT);
-            $path = DOL_DATA_ROOT.'/facture/facturation.php';
-           
-            $objWriter->save(str_replace('.php', '.xlsx', $path));
+            $path = str_replace('.php', '.xlsx', DOL_DATA_ROOT.'/facture/facturation.php');
+            $objWriter->save($path);
+            $object->UpdateAttachments($mois,$annee,$path);
             print'<div style="font-size:14px;" class="alert-box success">'.date('H:i:s').' Fichier créé avec success
                      <a href="javascript:void(0)" class="close">×</a>
                   </div>';

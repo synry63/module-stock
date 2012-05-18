@@ -63,6 +63,17 @@ class StockFlow extends CommonObject
              $this->couchdb->storeDocs($col);
           }
      }
+     function UpdateAttachments($mois,$annee,$path){
+        $id =$mois.$annee;
+        try{
+        $doc = $this->couchdb->getDoc($id);
+        $ok = $this->couchdb->storeAttachment($doc,$path);
+        }
+        catch (Exception $e) {
+           $obj->_id=$id;
+           $ok = $this->couchdb->storeAttachment($obj,$path);
+        }    
+     }
 	
 	function createByButton($rowsid,$user,$codemouv)
 	{
