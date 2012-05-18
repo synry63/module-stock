@@ -29,6 +29,7 @@ if (!$res)
 dol_include_once("/stockflow/class/stockflow.class.php");
 dol_include_once("/stockflow/lib/phptoexcel/Classes/PHPExcel.php");
 
+if (!$user->rights->facture->creer) accessforbidden();
 
 $arraym = array("", "Janvier", "Fevrier", "Mars", "Avril", "Mai", "Juin","Juillet","Août","Septembre","Octobre","Novembre","Decembre");
 $sizem = sizeof($arraym);
@@ -84,11 +85,10 @@ print'</div>';
 
 print'<div class="row">';
 print start_box("Excel","twelve","16-List-w_-Images.png",false);
-
 if ($_POST) {
     $mois = $_POST['mois'];
     $annee = $_POST['annee'];
-    $object = new Stock2($db);
+    $object = new StockFlow($db);
     $timestampd = mktime(0, 0, 0, $mois, 1, $annee); 
     $timestampf = mktime(0, 0, 0, ($mois + 1), 1, $annee); 
     $viewname = "listByDate";
@@ -105,7 +105,7 @@ if ($_POST) {
             $date = date("d/m/Y", $timestamp);
             $heure = date("H:i:s", $timestamp);
             $objPHPExcel->setActiveSheetIndex(0)
-                    ->setCellValue('A' . $i, $aRow->value->UserUpdate)
+                    ->setCellValue('A' . $i, $aRow->value->UserCreate)
                     ->setCellValue('B' . $i, $date)
                     ->setCellValue('C' . $i, $heure)
                     ->setCellValue('D' . $i, $aRow->value->Tracking)
@@ -118,12 +118,14 @@ if ($_POST) {
         // Save Excel 2007 file
         $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
         try {
-            $objWriter->save(str_replace('.php', '.xlsx', __FILE__));
+            $url =str_replace('htdocs','documents',DOL_MAIN_URL_ROOT);
+            $path = DOL_DATA_ROOT.'/facture/facturation.php';
+           
+            $objWriter->save(str_replace('.php', '.xlsx', $path));
             print'<div style="font-size:14px;" class="alert-box success">'.date('H:i:s').' Fichier créé avec success
                      <a href="javascript:void(0)" class="close">×</a>
                   </div>';
-            print "<p style='font-size:20px;'> Fichier Excel Généré pour ".$langs->trans(date("F",$timestampd))." ".date("Y",$timestampd)." : <a href='facturation.xlsx'>ICI</a></p>\n";
-        
+            print "<p style='font-size:20px;'> Fichier Excel Généré pour ".$langs->trans(date("F",$timestampd))." ".date("Y",$timestampd)." : <a href=".$url.'/facture/facturation.xlsx'.">ICI</a></p>\n";
         } catch (Exception $e) {
             print '<div style="font-size:14px;" class="alert-box error">
                 '.date('H:i:s').' Erreur lors de la création du fichier 
