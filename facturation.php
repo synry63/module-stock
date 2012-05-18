@@ -26,8 +26,8 @@
 $res = @include("../../main.inc.php");         // For "custom" directory
 if (!$res)
     $res = @include("../main.inc.php");
-dol_include_once("/stock2/class/stock2.class.php");
-dol_include_once("/stock2/lib/phptoexcel/Classes/PHPExcel.php");
+dol_include_once("/stockflow/class/stockflow.class.php");
+dol_include_once("/stockflow/lib/phptoexcel/Classes/PHPExcel.php");
 
 
 $arraym = array("", "Janvier", "Fevrier", "Mars", "Avril", "Mai", "Juin","Juillet","Août","Septembre","Octobre","Novembre","Decembre");
@@ -58,7 +58,7 @@ $arrayjs = array();
 llxHeader('', '', '', '', '', '', $arrayjs);
 
 print'<div class="row">';
-print start_box("Facturation","twelve","16-Download.png",true,true);
+print start_box("Facturation","twelve","16-Download.png",true);
 
 print'<form class="nice custom" action="facturation.php" method="post" style>';
 
@@ -83,8 +83,7 @@ print end_box();
 print'</div>';
 
 print'<div class="row">';
-print start_box("Excel","twelve","16-List-w_-Images.png",false,false);
-
+print start_box("Excel","twelve","16-List-w_-Images.png",false);
 
 if ($_POST) {
     $mois = $_POST['mois'];
@@ -93,7 +92,8 @@ if ($_POST) {
     $timestampd = mktime(0, 0, 0, $mois, 1, $annee); 
     $timestampf = mktime(0, 0, 0, ($mois + 1), 1, $annee); 
     $viewname = "listByDate";
-    $result = $object->getView($viewname, $timestampd, $timestampf);
+    $result = $object->getView($viewname, 0, '',$timestampd, $timestampf);
+	
     $array = $result->rows;
     if (sizeof($array) != 0) {
         $objPHPExcel = new PHPExcel();
